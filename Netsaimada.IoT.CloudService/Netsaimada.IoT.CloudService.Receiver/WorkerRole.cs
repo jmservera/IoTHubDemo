@@ -8,6 +8,7 @@ using Microsoft.ServiceBus;
 using Microsoft.ServiceBus.Messaging;
 using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.ServiceRuntime;
+using System.Threading.Tasks;
 
 namespace Netsaimada.IoT.CloudService.Receiver
 {
@@ -16,30 +17,28 @@ namespace Netsaimada.IoT.CloudService.Receiver
         // The name of your queue
         const string QueueName = "ProcessingQueue";
 
+        private readonly CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        private readonly ManualResetEvent runCompleteEvent = new ManualResetEvent(false);
+        private EventProcessorHost _host;
+        EventHubClient client;
+
         // QueueClient is thread-safe. Recommended that you cache 
         // rather than recreating it on every request
-        QueueClient Client;
+        //QueueClient Client;
         ManualResetEvent CompletedEvent = new ManualResetEvent(false);
 
         public override void Run()
         {
-            Trace.WriteLine("Starting processing of messages");
+            Trace.TraceInformation("WorkerRole1 is running");
 
-            // Initiates the message pump and callback is invoked for each message that is received, calling close on the client will stop the pump.
-            Client.OnMessage((receivedMessage) =>
-                {
-                    try
-                    {
-                        // Process the message
-                        Trace.WriteLine("Processing Service Bus message: " + receivedMessage.SequenceNumber.ToString());
-                    }
-                    catch
-                    {
-                        // Handle any message processing specific exceptions here
-                    }
-                });
-
-            CompletedEvent.WaitOne();
+            try
+            {
+                this.RunAsync(this.cancellationTokenSource.Token).Wait();
+            }
+            finally
+            {
+                this.runCompleteEvent.Set();
+            }
         }
 
         public override bool OnStart()
@@ -48,24 +47,44 @@ namespace Netsaimada.IoT.CloudService.Receiver
             ServicePointManager.DefaultConnectionLimit = 12;
 
             // Create the queue if it does not exist already
-            string connectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
-            var namespaceManager = NamespaceManager.CreateFromConnectionString(connectionString);
-            if (!namespaceManager.QueueExists(QueueName))
-            {
-                namespaceManager.CreateQueue(QueueName);
-            }
+            string serviceBusConnectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
+            string storageConnectionString = CloudConfigurationManager.GetSetting("Microsoft.WindowsAzure.Storage.ConnectionString");
+            
+            var namespaceManager = NamespaceManager.CreateFromConnectionString(serviceBusConnectionString);
+              
+                          Trace.TraceInformation("WorkerRole1 has been started");
 
-            // Initialize the connection to Service Bus Queue
-            Client = QueueClient.CreateFromConnectionString(connectionString, QueueName);
+             string eventHubName = "telemetry";
+ 
+              client = EventHubClient.Create(eventHubName);
+             Trace.TraceInformation("Consumer group is: " + client.GetDefaultConsumerGroup().GroupName);
+ 
+             _host = new EventProcessorHost("Worker"+new Guid().ToString(), eventHubName, client.GetDefaultConsumerGroup().GroupName,
+                 serviceBusConnectionString, storageConnectionString);
+ 
+             Trace.TraceInformation("Created event processor host...");
+
             return base.OnStart();
         }
 
         public override void OnStop()
         {
             // Close the connection to Service Bus Queue
-            Client.Close();
+            client.Close();
             CompletedEvent.Set();
             base.OnStop();
+        }
+
+        private async Task RunAsync(CancellationToken cancellationToken)
+        {
+            await _host.RegisterEventProcessorAsync<EventProcessor>();
+
+            // TODO: Replace the following with your own logic.
+            while (!cancellationToken.IsCancellationRequested)
+            {
+                //Trace.TraceInformation("Working");
+                await Task.Delay(1000);
+            }
         }
     }
 }

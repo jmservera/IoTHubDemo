@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netsaimada.IoT.CloudService
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netsaimada.IoT.CloudService.StatsViewer.Tests", "Netsaimada.IoT.CloudService.StatsViewer.Tests\Netsaimada.IoT.CloudService.StatsViewer.Tests.csproj", "{59221327-9D04-4A57-B5F1-A323E12BB21C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Netsaimada.IoT.Cloud.Models", "..\Netsaimada.IoT.Cloud.Models\Netsaimada.IoT.Cloud.Models.csproj", "{C2392CB8-BA72-4033-8C6B-5442474E556D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{59221327-9D04-4A57-B5F1-A323E12BB21C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{59221327-9D04-4A57-B5F1-A323E12BB21C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{59221327-9D04-4A57-B5F1-A323E12BB21C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C2392CB8-BA72-4033-8C6B-5442474E556D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C2392CB8-BA72-4033-8C6B-5442474E556D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C2392CB8-BA72-4033-8C6B-5442474E556D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C2392CB8-BA72-4033-8C6B-5442474E556D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

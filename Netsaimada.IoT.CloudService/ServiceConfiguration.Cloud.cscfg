@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ServiceConfiguration serviceName="Netsaimada.IoT.CloudService" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceConfiguration" osFamily="4" osVersion="*" schemaVersion="2014-06.2.4">
   <Role name="Netsaimada.IoT.CloudService.Receiver">
-    <Instances count="1" />
+    <Instances count="2" />
     <ConfigurationSettings>
       <Setting name="Microsoft.ServiceBus.ConnectionString" value="Endpoint=sb://netsaimadaiot.servicebus.windows.net/;SharedAccessKeyName=listen;SharedAccessKey=rvfkR4gPgxou0zmZQ/oHOEaHc45nVYEmVSmzMUAbnHo=" />
       <Setting name="StorageConnectionString" value="DefaultEndpointsProtocol=https;AccountName=netsaimadaiot;AccountKey=MbV5hVSa/aInXsN0eq7jSqNt1pvVR3OMEhZj+ale+Y/XOj9T8Ht3N2iP+Mtxa+32Sxd02qvuUd4+07WKIf9ATA==" />

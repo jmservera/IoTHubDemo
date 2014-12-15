@@ -48,7 +48,7 @@ namespace Netsaimada.IoT.CloudService.Receiver
 
             // Create the queue if it does not exist already
             string serviceBusConnectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
-            string storageConnectionString = CloudConfigurationManager.GetSetting("Microsoft.WindowsAzure.Storage.ConnectionString");
+            string storageConnectionString = CloudConfigurationManager.GetSetting("StorageConnectionString");
             
             var namespaceManager = NamespaceManager.CreateFromConnectionString(serviceBusConnectionString);
               

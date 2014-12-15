@@ -20,18 +20,40 @@ namespace MouseTelemetry
             _client = EventHubClient.Create(name);
         }
 
-        public async void SendAsync(int x, int y)
+        public async void SendMouseAsync(int x, int y)
         {
             try
             {
-                var serializedXY = JsonConvert.SerializeObject(new { x = x, y = y, date=DateTime.UtcNow });
-                var data = new EventData(UTF8Encoding.UTF8.GetBytes(serializedXY)) { PartitionKey = GetMacAddress() };
-                await _client.SendAsync(data);
+                var serializedXY = JsonConvert.SerializeObject(new { eventType="Mouse", x = x, y = y, date=DateTime.UtcNow });
+                await sendAsync(serializedXY);
             }
             catch (Exception ex)
             {
                 Trace.TraceError("Ex: {0}\t{1}", ex.Message, ex.StackTrace);
             }
+        }
+
+        public async void SendProcessorAsync(float percent, float memory)
+        {
+            try
+            {
+                var serializedXY = JsonConvert.SerializeObject(new { eventType = "Processor", 
+                    cpu = percent,
+                    memory = memory, date = DateTime.UtcNow });
+                await sendAsync(serializedXY);
+            }
+            catch (Exception ex)
+            {
+                Trace.TraceError("Ex: {0}\t{1}", ex.Message, ex.StackTrace);
+            }
+        }
+
+
+
+        private Task sendAsync(string serialized)
+        {
+            var data = new EventData(UTF8Encoding.UTF8.GetBytes(serialized)) { PartitionKey = GetMacAddress() };
+            return _client.SendAsync(data);
         }
 
         string macAddress = null;
@@ -67,5 +89,9 @@ namespace MouseTelemetry
             return macAddress;
         }
 
+        private string GetProcId()
+        {
+            return Process.GetCurrentProcess().Id.ToString();
+        }
     }
 }

@@ -3,6 +3,7 @@ using Microsoft.WindowsAzure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using Netsaimada.IoT.Cloud.Models;
+using Netsaimada.IoT.CloudService.Receiver.Dal;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -24,10 +25,12 @@ namespace Netsaimada.IoT.CloudService.Receiver
         Stopwatch checkpointStopWatch;
 
         MouseTelemetries _mouseTelemetries;
+        ComputerTelemetries _computerTelemetries;
 
         public EventProcessor()
         {
             _mouseTelemetries = new MouseTelemetries();
+            _computerTelemetries = new ComputerTelemetries();
         }
 
         public Task CloseAsync(PartitionContext context, CloseReason reason)
@@ -53,7 +56,9 @@ namespace Netsaimada.IoT.CloudService.Receiver
         {
             Trace.TraceInformation("SimpleEventProcessor initialize.  Partition: '{0}', Offset: '{1}'", context.Lease.PartitionId, context.Lease.Offset);
 
-            await _mouseTelemetries.OpenAsync();
+            var t1= _mouseTelemetries.OpenAsync();
+            var t2 = _computerTelemetries.OpenAsync();
+            await Task.WhenAll(t1, t2);
 
             this.Context = context;
             this.checkpointStopWatch = new Stopwatch();
@@ -71,7 +76,7 @@ namespace Netsaimada.IoT.CloudService.Receiver
                 Trace.TraceInformation("Processing event hub data for {0} messages...", messages.Count());
                 foreach (EventData eventData in messages)
                 {
-                    string key = eventData.PartitionKey;
+                    string macAddress = eventData.PartitionKey;
 
                     string data = System.Text.Encoding.UTF8.GetString(eventData.GetBytes());
                     try
@@ -81,14 +86,32 @@ namespace Netsaimada.IoT.CloudService.Receiver
 
                         if (jsonData.date != null)
                         {
-                            int x = jsonData.x;
-                            int y = jsonData.y;
-                            DateTime d = jsonData.date;
-                            MouseTelemetryData telemetryData = new MouseTelemetryData(key, d, x, y);
-                            _mouseTelemetries.Add(telemetryData);
+                            DateTime dateStamp = jsonData.date;
+
+                            switch ((string)jsonData.eventType)
+                            {
+                                case "Mouse":
+                                    {
+                                        int x = jsonData.x;
+                                        int y = jsonData.y;
+                                        MouseTelemetryData telemetryData = new MouseTelemetryData(macAddress, dateStamp, x, y);
+                                        _mouseTelemetries.Add(telemetryData);
+                                        break;
+                                    }
+                                case "Processor":
+                                    {
+                                        float cpu = jsonData.cpu;
+                                        float memory = jsonData.memory;
+                                        _computerTelemetries.Add(new ProcessorTelemetryData(macAddress, dateStamp, cpu, memory));
+                                        break;
+                                    }
+                                default:
+                                    Trace.TraceInformation("Unknnown event {0}", data);
+                                    break;
+                            }
                         }
                         Trace.TraceInformation("Message received.  Partition: '{0}', Device: '{1}''",
-                               this.Context.Lease.PartitionId, key);
+                               this.Context.Lease.PartitionId, macAddress);
                     }
                     catch (Exception exx)
                     {
@@ -100,7 +123,7 @@ namespace Netsaimada.IoT.CloudService.Receiver
                 {
                     this.IsReceivedMessageAfterClose = true;
                 }
-                await _mouseTelemetries.SaveAsync();
+                await Task.WhenAll(_mouseTelemetries.SaveAsync(), _computerTelemetries.SaveAsync());
                 //if(result.)
                 await context.CheckpointAsync();
 

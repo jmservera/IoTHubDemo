@@ -72,9 +72,11 @@ namespace Netsaimada.IoT.CloudService.Receiver
 
         private async Task RunAsync(CancellationToken cancellationToken)
         {
-            var factory = new EventProcessorFactory(_host.HostName);
+            //var factory = new EventProcessorFactory(_host.HostName);
 
-            await _host.RegisterEventProcessorFactoryAsync(factory);
+            //await _host.RegisterEventProcessorFactoryAsync(factory);
+
+            await _host.RegisterEventProcessorAsync<EventProcessor>();
 
             // TODO: Replace the following with your own logic.
             while (!cancellationToken.IsCancellationRequested)

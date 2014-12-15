@@ -13,6 +13,7 @@
     <StartDevelopmentStorage>True</StartDevelopmentStorage>
     <Name>Netsaimada.IoT.CloudService</Name>
     <UseWebProjectPorts>False</UseWebProjectPorts>
+    <PackageEnableRemoteDebugger>False</PackageEnableRemoteDebugger>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -46,26 +47,18 @@
       <RoleName>Netsaimada.IoT.CloudService.Receiver</RoleName>
       <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
     </ProjectReference>
-    <ProjectReference Include="Netsaimada.IoT.CloudService.StatsViewer\Netsaimada.IoT.CloudService.StatsViewer.csproj">
-      <Name>Netsaimada.IoT.CloudService.StatsViewer</Name>
-      <Project>{1d4f98a5-8ebd-4849-a38e-9c838c0d159f}</Project>
-      <Private>True</Private>
-      <RoleType>Web</RoleType>
-      <RoleName>Netsaimada.IoT.CloudService.StatsViewer</RoleName>
-      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Netsaimada.IoT.CloudService.ReceiverContent\" />
-    <Folder Include="Netsaimada.IoT.CloudService.StatsViewerContent\" />
+    <Folder Include="Profiles" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Netsaimada.IoT.CloudService.ReceiverContent\diagnostics.wadcfg">
       <SubType>Content</SubType>
     </Content>
-    <Content Include="Netsaimada.IoT.CloudService.StatsViewerContent\diagnostics.wadcfg">
-      <SubType>Content</SubType>
-    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <PublishProfile Include="Profiles\netsaimadaiotProduction.azurePubxml" />
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>

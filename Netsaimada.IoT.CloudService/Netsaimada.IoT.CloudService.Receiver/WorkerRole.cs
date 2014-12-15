@@ -22,11 +22,6 @@ namespace Netsaimada.IoT.CloudService.Receiver
         private EventProcessorHost _host;
         EventHubClient client;
 
-        // QueueClient is thread-safe. Recommended that you cache 
-        // rather than recreating it on every request
-        //QueueClient Client;
-        ManualResetEvent CompletedEvent = new ManualResetEvent(false);
-
         public override void Run()
         {
             Trace.TraceInformation("WorkerRole1 is running");
@@ -49,35 +44,37 @@ namespace Netsaimada.IoT.CloudService.Receiver
             // Create the queue if it does not exist already
             string serviceBusConnectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString");
             string storageConnectionString = CloudConfigurationManager.GetSetting("StorageConnectionString");
-            
-            var namespaceManager = NamespaceManager.CreateFromConnectionString(serviceBusConnectionString);
-              
-                          Trace.TraceInformation("WorkerRole1 has been started");
 
-             string eventHubName = "telemetry";
- 
-              client = EventHubClient.Create(eventHubName);
-             Trace.TraceInformation("Consumer group is: " + client.GetDefaultConsumerGroup().GroupName);
- 
-             _host = new EventProcessorHost("Worker"+new Guid().ToString(), eventHubName, client.GetDefaultConsumerGroup().GroupName,
-                 serviceBusConnectionString, storageConnectionString);
- 
-             Trace.TraceInformation("Created event processor host...");
+            var namespaceManager = NamespaceManager.CreateFromConnectionString(serviceBusConnectionString);
+
+            Trace.TraceInformation("WorkerRole1 has been started");
+
+            string eventHubName = "telemetry";
+
+            client = EventHubClient.Create(eventHubName);
+            Trace.TraceInformation("Consumer group is: " + client.GetDefaultConsumerGroup().GroupName);
+
+            _host = new EventProcessorHost("Worker RoleId: " + RoleEnvironment.CurrentRoleInstance.Id, eventHubName, client.GetDefaultConsumerGroup().GroupName,
+                serviceBusConnectionString, storageConnectionString);
+
+            Trace.TraceInformation("Created event processor host {0} ...",_host.HostName);
 
             return base.OnStart();
         }
 
-        public override void OnStop()
+        public async override void OnStop()
         {
+            await _host.UnregisterEventProcessorAsync(); 
             // Close the connection to Service Bus Queue
             client.Close();
-            CompletedEvent.Set();
             base.OnStop();
         }
 
         private async Task RunAsync(CancellationToken cancellationToken)
         {
-            await _host.RegisterEventProcessorAsync<EventProcessor>();
+            var factory = new EventProcessorFactory(_host.HostName);
+
+            await _host.RegisterEventProcessorFactoryAsync(factory);
 
             // TODO: Replace the following with your own logic.
             while (!cancellationToken.IsCancellationRequested)
@@ -85,6 +82,7 @@ namespace Netsaimada.IoT.CloudService.Receiver
                 //Trace.TraceInformation("Working");
                 await Task.Delay(1000);
             }
+            
         }
     }
 }

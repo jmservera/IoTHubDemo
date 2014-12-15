@@ -11,6 +11,7 @@
     <Instances count="1" />
     <ConfigurationSettings>
       <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="Microsoft.ServiceBus.ConnectionString" value="Endpoint=sb://netsaimadaiot.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=rlHTuy1aztoMZxEPNVpeRbT+76HlNG8+DLjgpxCIHmc=" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>

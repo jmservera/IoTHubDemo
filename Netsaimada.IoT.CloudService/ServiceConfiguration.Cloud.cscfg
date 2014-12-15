@@ -10,7 +10,8 @@
   <Role name="Netsaimada.IoT.CloudService.StatsViewer">
     <Instances count="1" />
     <ConfigurationSettings>
-      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="UseDevelopmentStorage=true" />
+      <Setting name="Microsoft.WindowsAzure.Plugins.Diagnostics.ConnectionString" value="DefaultEndpointsProtocol=https;AccountName=netsaimadaiot;AccountKey=MbV5hVSa/aInXsN0eq7jSqNt1pvVR3OMEhZj+ale+Y/XOj9T8Ht3N2iP+Mtxa+32Sxd02qvuUd4+07WKIf9ATA==" />
+      <Setting name="Microsoft.ServiceBus.ConnectionString" value="Endpoint=sb://netsaimadaiot.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=rlHTuy1aztoMZxEPNVpeRbT+76HlNG8+DLjgpxCIHmc=" />
     </ConfigurationSettings>
   </Role>
 </ServiceConfiguration>

@@ -82,11 +82,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dal\ComputerTelemetries.cs" />
+    <Compile Include="Dal\BatchedStorage.cs" />
     <Compile Include="EventProcessor.cs" />
-    <Compile Include="EventProcessorFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Dal\MouseTelemetries.cs" />
     <Compile Include="WorkerRole.cs" />
   </ItemGroup>
   <ItemGroup>

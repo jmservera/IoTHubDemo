@@ -1,19 +1,15 @@
-﻿using Microsoft.ServiceBus.Messaging;
-using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
-using Netsaimada.IoT.Cloud.Models;
-using Netsaimada.IoT.CloudService.Receiver.Dal;
-using Newtonsoft.Json.Linq;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Netsaimada.IoT.CloudService.Receiver
+﻿namespace Netsaimada.IoT.CloudService.Receiver
 {
+    using Microsoft.ServiceBus.Messaging;
+    using Microsoft.WindowsAzure.Storage;
+    using Netsaimada.IoT.Cloud.Models;
+    using Netsaimada.IoT.CloudService.Receiver.Dal;
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.Linq;
+    using System.Threading.Tasks;
+
     public class EventProcessor : IEventProcessor
     {
         public PartitionContext Context { get; private set; }
@@ -24,13 +20,11 @@ namespace Netsaimada.IoT.CloudService.Receiver
         public bool IsReceivedMessageAfterClose { get; set; }
         Stopwatch checkpointStopWatch;
 
-        MouseTelemetries _mouseTelemetries;
-        ComputerTelemetries _computerTelemetries;
+        BatchedStorage<MouseTelemetryData> _mouseTelemetries = new BatchedStorage<MouseTelemetryData>("mouseTelemetryLogs");
+        BatchedStorage<ProcessorTelemetryData> _computerTelemetries = new BatchedStorage<ProcessorTelemetryData>("processorTelemetry");
 
         public EventProcessor()
         {
-            _mouseTelemetries = new MouseTelemetries();
-            _computerTelemetries = new ComputerTelemetries();
         }
 
         public Task CloseAsync(PartitionContext context, CloseReason reason)
@@ -56,7 +50,7 @@ namespace Netsaimada.IoT.CloudService.Receiver
         {
             Trace.TraceInformation("SimpleEventProcessor initialize.  Partition: '{0}', Offset: '{1}'", context.Lease.PartitionId, context.Lease.Offset);
 
-            var t1= _mouseTelemetries.OpenAsync();
+            var t1 = _mouseTelemetries.OpenAsync();
             var t2 = _computerTelemetries.OpenAsync();
             await Task.WhenAll(t1, t2);
 
@@ -150,6 +144,7 @@ namespace Netsaimada.IoT.CloudService.Receiver
             {
                 Trace.TraceError("Error in processing: {0}", exp.Message);
             }
+
             if (doCheckpoint)
             {
                 await context.CheckpointAsync();

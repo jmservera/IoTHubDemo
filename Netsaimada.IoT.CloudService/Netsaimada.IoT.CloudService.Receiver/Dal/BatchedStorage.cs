@@ -1,17 +1,13 @@
-﻿using Microsoft.WindowsAzure;
-using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Table;
-using Netsaimada.IoT.Cloud.Models;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Netsaimada.IoT.CloudService.Receiver.Dal
+﻿namespace Netsaimada.IoT.CloudService.Receiver.Dal
 {
-    public abstract class BatchedStorage<T> where T : class
+    using Microsoft.WindowsAzure;
+    using Microsoft.WindowsAzure.Storage;
+    using Microsoft.WindowsAzure.Storage.Table;
+    using System;
+    using System.Diagnostics;
+    using System.Threading.Tasks;
+
+    public class BatchedStorage<T> where T : ITableEntity
     {
         protected static object _lock = new object();
         protected static CloudStorageAccount _storageAccount;
@@ -20,10 +16,6 @@ namespace Netsaimada.IoT.CloudService.Receiver.Dal
 
         public BatchedStorage(string tableName)
         {
-            if(typeof(T).GetInterface(typeof(ITableEntity).FullName)==null)
-            {
-                throw new InvalidCastException(string.Format("{0} should implement interface ITableEntity", typeof(T).FullName));
-            }
             if (_storageAccount == null)
             {
                 lock (_lock)
@@ -35,7 +27,7 @@ namespace Netsaimada.IoT.CloudService.Receiver.Dal
                     }
                 }
             }
-            _tableName=tableName;
+            _tableName = tableName;
         }
         public Task OpenAsync()
         {
@@ -51,21 +43,15 @@ namespace Netsaimada.IoT.CloudService.Receiver.Dal
             }
             return Task.FromResult<object>(null);
         }
-
         public void Add(T data)
         {
-            ITableEntity entity = data as ITableEntity;
-            if (entity == null)
-            {
-                throw new ArgumentException("data should implement ITableEntity");
-            }
             lock (_lock)
             {
                 if (_batch == null)
                 {
                     _batch = new TableBatchOperation();
                 }
-                _batch.Add(TableOperation.Insert(entity));
+                _batch.Add(TableOperation.Insert(data));
             }
         }
         public Task SaveAsync()
@@ -76,7 +62,7 @@ namespace Netsaimada.IoT.CloudService.Receiver.Dal
                 batch = _batch;
                 _batch = null;
             }
-            if (batch!=null && batch.Count > 0)
+            if (batch != null && batch.Count > 0)
             {
                 var tableClient = _storageAccount.CreateCloudTableClient();
                 var table = tableClient.GetTableReference(_tableName);
@@ -84,15 +70,6 @@ namespace Netsaimada.IoT.CloudService.Receiver.Dal
             }
             else
                 return Task.FromResult<object>(null);
-        }
-    }
-    public class MouseTelemetries : BatchedStorage<MouseTelemetryData>
-    {
-        const string _telemetryLogsTableName = "mouseTelemetryLogs";
-
-        public MouseTelemetries():base(_telemetryLogsTableName)
-        {
-            
         }
     }
 }

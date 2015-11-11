@@ -1,0 +1,17 @@
+﻿@model Netsaimada.IoT.CloudService.StatsViewer.Models.QueueViewModel
+
+<div>
+    path= @Model.RuntimeInfo.Path<br/>
+    Partition count = @Model.RuntimeInfo.PartitionCount<br />
+    CreatedAt = @Model.RuntimeInfo.CreatedAt<br />
+    partitions:<br/>
+    <div>
+        @foreach (var partitionId in Model.RuntimeInfo.PartitionIds)
+        {
+            @partitionId<br/>
+        }
+    </div>
+    @Html.ActionLink("resetQueue","ResetQueue")
+</div>
+
+

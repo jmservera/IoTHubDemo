@@ -1,0 +1,24 @@
+﻿using MouseKeyboardActivityMonitor;
+using MouseKeyboardActivityMonitor.WinApi;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace MouseTelemetry
+{
+    class Program
+    {
+        [STAThread]
+        static void Main()
+        {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+            Application.Run(new MainForm());
+
+            //Application.Run(new TestCommonWinFormsBehaviour());
+        }
+    }
+}

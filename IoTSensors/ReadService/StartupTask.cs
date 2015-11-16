@@ -85,7 +85,7 @@ namespace ReadService
         const string HUMIDMEASURE = "Humidity";
         const string TEMPUNITS = "C";
         const string HUMIDUNITS = "%";
-        const string jsonFormat = "{{\"guid\":\"{0}\", \"organization\":\"{1}\", \"displayname\": \"{2}\", \"location\": \"{3}\", \"measurename\": \"{4}\", \"unitofmeasure\": \"{5}\", \"value\":{6}, \"timeCreated\":\"{7}\" }}";
+        const string jsonFormat = "{{\"guid\":\"{0}\", \"organization\":\"{1}\", \"displayname\": \"{2}\", \"location\": \"{3}\", \"measurename\": \"{4}\", \"unitofmeasure\": \"{5}\", \"value\":{6}, \"timecreated\":\"{7}\" }}";
         
 
         private async Task SendEvents(DeviceClient deviceClient)

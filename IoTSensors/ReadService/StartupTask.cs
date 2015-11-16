@@ -85,7 +85,7 @@ namespace ReadService
         const string HUMIDMEASURE = "Humidity";
         const string TEMPUNITS = "C";
         const string HUMIDUNITS = "%";
-        const string jsonFormat = "{{\"guid\":\"{0}\", \"organization\":\"{1}\", \"displayname\": \"{2}\", \"location\": \"{3}\", \"measurename\": \"{4}\", \"unitofmeasure\": \"{5}\", \"value\":{6} }}";
+        const string jsonFormat = "{{\"guid\":\"{0}\", \"organization\":\"{1}\", \"displayname\": \"{2}\", \"location\": \"{3}\", \"measurename\": \"{4}\", \"unitofmeasure\": \"{5}\", \"value\":{6}, \"timeCreated\":\"{7}\" }}";
         
 
         private async Task SendEvents(DeviceClient deviceClient)
@@ -103,11 +103,11 @@ namespace ReadService
                         try {
                             System.Diagnostics.Debug.WriteLine(string.Format("Temp:{0} Hum:{1}", data.Temperature, data.Humidity));
                             dataBuffer = string.Format(jsonFormat,
-                                GUID, ORGANIZATION, DISPLAYNAME, LOCATION, TEMPMEASURE, TEMPUNITS, data.Temperature);
+                                GUID, ORGANIZATION, DISPLAYNAME, LOCATION, TEMPMEASURE, TEMPUNITS, data.Temperature, DateTime.UtcNow);
 Message eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
                             await deviceClient.SendEventAsync(eventMessage);
                             dataBuffer = string.Format(jsonFormat,
-                                GUID, ORGANIZATION, DISPLAYNAME, LOCATION, HUMIDMEASURE, HUMIDUNITS, data.Humidity);
+                                GUID, ORGANIZATION, DISPLAYNAME, LOCATION, HUMIDMEASURE, HUMIDUNITS, data.Humidity, DateTime.UtcNow);
                             eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
                             await deviceClient.SendEventAsync(eventMessage);
                         }

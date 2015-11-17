@@ -44,5 +44,8 @@ namespace DhtReadService
                 return f;
             }
         }
+
+        public int Failures { get; set; }
+
     }
 }

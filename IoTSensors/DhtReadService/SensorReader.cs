@@ -49,6 +49,7 @@ namespace DhtReadService
                 failed = false;
                 try {
                     reading = dht11.Sample();
+                    reading.Failures = retryCount;
                 }
                 catch(TimeoutException tex)
                 {

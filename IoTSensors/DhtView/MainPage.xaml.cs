@@ -33,10 +33,9 @@ namespace DhtView
         }
         private SolidColorBrush redBrush = new SolidColorBrush(Windows.UI.Colors.Red);
         private SolidColorBrush orangeBrush = new SolidColorBrush(Windows.UI.Colors.Orange);
-        const string iotHubUri = "beaIoTHub.azure-devices.net";
-        const string deviceKey = "aCl74Lv/QgwU7bAaoloirn6YXoIeDajm4Q5r7IShTPY=";
-        const string rpiName = "Raspberry";
-        
+        const string iotHubUri = "sqlsathub.azure-devices.net";
+        const string deviceKey = "WznTpvxyTJcme0dSUYdGNH/KneVXxztbnvlcAuFEKFc=";
+        const string rpiName = "sqlsat_01";
 
         private async void InitializeSensor()
         {
@@ -166,8 +165,6 @@ namespace DhtView
                         rectangleHumDown.Height = 2 * data.Humidity;
 
                     }
-
-                    // this.dataView.Text = $"Temp: {data.Temperature} ºC\tHumidity: {data.Humidity}%\tRetries:{data.Failures}";
                 });
 
             }

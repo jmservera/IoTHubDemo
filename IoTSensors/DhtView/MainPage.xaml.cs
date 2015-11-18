@@ -29,13 +29,14 @@ namespace DhtView
         public MainPage()
         {
             this.InitializeComponent();
-
             InitializeSensor();
         }
-
-        const string iotHubUri = "jmHub.azure-devices.net";
-        const string deviceKey = "ou7pkZF5sNxdlgy8zUcMa8U3iO+mi54LwvQ8kmKdVdc=";
-        const string rpiName = "myRpi2";
+        private SolidColorBrush redBrush = new SolidColorBrush(Windows.UI.Colors.Red);
+        private SolidColorBrush orangeBrush = new SolidColorBrush(Windows.UI.Colors.Orange);
+        const string iotHubUri = "beaIoTHub.azure-devices.net";
+        const string deviceKey = "aCl74Lv/QgwU7bAaoloirn6YXoIeDajm4Q5r7IShTPY=";
+        const string rpiName = "Raspberry";
+        
 
         private async void InitializeSensor()
         {
@@ -134,10 +135,41 @@ namespace DhtView
 
         private async void refreshData(Dht11Reading data)
         {
-            await dataView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
-                this.dataView.Text = $"Temp: {data.Temperature} ºC\tHumidity: {data.Humidity}%\tRetries:{data.Failures}";
-            });
+                await textBlockTemp.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    if (data.IsValid)
+                    {
+                        this.textBlockTemp.Text = data.Temperature + "°C";
+                        this.textBlockHum.Text = data.Humidity.ToString() + "%";
+                        this.reading.Text = "";
+                        if (data.Temperature >= 30)
+                        {
+                            rectangleTempDown.Fill = redBrush;
+                        }
+                        else
+                        {
+                            rectangleTempDown.Fill = orangeBrush;
+                        }
+                        if (data.Humidity >= 50)
+                        {
+                            rectangleHumDown.Fill = redBrush;
+                        }
+                        else
+                        {
+                            rectangleHumDown.Fill = orangeBrush;
+                        }
+                        rectangleTempUp.Height = 2 * (100 - data.Temperature);
+                        rectangleTempDown.Height = 2 * data.Temperature;
+                        rectangleHumUp.Height = 2 * (100 - data.Humidity);
+                        rectangleHumDown.Height = 2 * data.Humidity;
+
+                    }
+
+                    // this.dataView.Text = $"Temp: {data.Temperature} ºC\tHumidity: {data.Humidity}%\tRetries:{data.Failures}";
+                });
+
+            }
         }
     }
 }

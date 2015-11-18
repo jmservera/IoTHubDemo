@@ -65,6 +65,7 @@ namespace DhtView
                     {
                         messageData = Encoding.ASCII.GetString(receivedMessage.GetBytes());
                         System.Diagnostics.Debug.WriteLine(String.Format("\t{0}> Received message: {1}", DateTime.Now.ToLocalTime(), messageData));
+                        messages.Text = $"{DateTime.Now.ToLocalTime()}> Received message: {messageData}";
                         await deviceClient.CompleteAsync(receivedMessage);
                     }
                     recoverTimeout = 1000;

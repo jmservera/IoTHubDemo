@@ -15,7 +15,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
-
+                <RowDefinition Height="auto"/>
 
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -33,5 +33,6 @@
             <Rectangle x:Name="rectangleHumUp" Grid.Row="4" Grid.Column="1" Height="200" Margin="0,20,0,0"  Width="25" Fill="Green" />
             <Rectangle x:Name="rectangleHumDown" Grid.Row="5" Grid.Column="1" Width="25" Margin="0,0,0,20" />
             <TextBlock x:Name="reading" Grid.Row="5" Grid.Column="2" Text="Reading sensor..." FontSize="28" Width="200" Margin="40,0,0,0"/>
+            <TextBlock x:Name="messages" Grid.Row="6" Grid.ColumnSpan="3" FontSize="28"/>
         </Grid>
     </Page>

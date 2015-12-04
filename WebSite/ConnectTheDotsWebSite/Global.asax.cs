@@ -46,7 +46,6 @@ namespace ConnectTheDotsWebSite
         public EventProcessorHost processorHost { get; set; }
         public EventProcessorOptions processorHostOptions { get; set; }
         public EventHubClient client { get; set; }
-        public NamespaceManager namespaceManager { get; set; }
         public string storageConnectionString { get; set; }
     }
 
@@ -58,7 +57,6 @@ namespace ConnectTheDotsWebSite
     public class Global : System.Web.HttpApplication
     {
         EventHubSettings eventHubDevicesSettings;
-        EventHubSettings eventHubAlertsSettings;
         public static GlobalSettings globalSettings;
 
         protected void Application_Start(Object sender, EventArgs e)
@@ -76,63 +74,26 @@ namespace ConnectTheDotsWebSite
 
             // Create EventProcessorHost clients
             CreateEventProcessorHostClient(ref eventHubDevicesSettings);
-           // CreateEventProcessorHostClient(ref eventHubAlertsSettings);
         }
 
         protected void Application_End(Object sender, EventArgs e)
         {
             Trace.TraceInformation("Unregistering EventProcessorHosts");
             eventHubDevicesSettings.processorHost.UnregisterEventProcessorAsync().Wait();
-            //eventHubAlertsSettings.processorHost.UnregisterEventProcessorAsync().Wait();
         }
-        
         private void CreateEventProcessorHostClient(ref EventHubSettings eventHubSettings)
         {
             Trace.TraceInformation("Creating EventProcessorHost: {0}, {1}, {2}", this.Server.MachineName, eventHubSettings.name, eventHubSettings.consumerGroup);
             try
             {
-
                 eventHubSettings.client = EventHubClient.CreateFromConnectionString(eventHubSettings.connectionString,
                                                                                 eventHubSettings.name);
-
-                // Delete and recreate the consumer group
-                // this allows to ensure we will start receiving only fresh messages when the site starts
-
-                foreach (ConsumerGroupDescription consumerGroupDesc in eventHubSettings.namespaceManager.GetConsumerGroups(eventHubSettings.client.Path))
-                {
-                    // We remove any previously created consumergroups containing the word WebSite in the name
-                    if (consumerGroupDesc.Name.ToLowerInvariant().Contains("website") &&
-                        !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME"))
-                        ||
-                        consumerGroupDesc.Name.ToLowerInvariant().Contains("local") &&
-                        String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")))
-                    {
-                        eventHubSettings.namespaceManager.DeleteConsumerGroup(eventHubSettings.name, consumerGroupDesc.Name);
-                    }   
-                }
-
-                //Workaround to delete old blobs related to old consumer groups
-                CloudBlobContainer eventHubBlobContainer = BlobHelper.SetUpContainer(eventHubSettings.storageConnectionString, eventHubSettings.name);
-
-                string blobPerfix = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")) ? "local" : "website";
-
-                IEnumerable<CloudBlockBlob> oldBlobs= eventHubBlobContainer.ListBlobs(blobPerfix, true, BlobListingDetails.All).OfType<CloudBlockBlob>();
-                foreach (var blob in oldBlobs)
-                {
-                    try
-                    {
-                        blob.DeleteIfExists();
-                    }
-                    catch (Exception)
-                    {
-                        Debug.Print("Error happened while trying to delete old ConsumerGroup related blob.");
-                    }
-                }
+               
             }
             catch(Exception ex)
             {
                 // Error happened while trying to delete old ConsumerGroups.
-                Debug.Print("Error happened while trying to delete old ConsumerGroups");
+                Debug.Print($"Error happened while trying to delete old ConsumerGroups: {ex.Message}");
             }
             finally
             {
@@ -145,7 +106,7 @@ namespace ConnectTheDotsWebSite
                 }
                 catch(Exception ex)
                 {
-                    Debug.Print("Error happened: " + ex.Message);
+                    Debug.Print($"Error happened: {ex.Message}");
                 }
             }
 
@@ -190,25 +151,16 @@ namespace ConnectTheDotsWebSite
             // Read settings for Devices Event Hub
             eventHubDevicesSettings.connectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionStringDevices");
             eventHubDevicesSettings.name = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.EventHubDevices").ToLowerInvariant();
-            eventHubDevicesSettings.storageConnectionString = CloudConfigurationManager.GetSetting("Microsoft.Storage.ConnectionString");
-            eventHubDevicesSettings.namespaceManager = NamespaceManager.CreateFromConnectionString(CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString"));
-
-            // Read settings for Alerts Event Hub
-            eventHubAlertsSettings.connectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionStringAlerts");
-				eventHubAlertsSettings.name = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.EventHubAlerts").ToLowerInvariant();
-            eventHubAlertsSettings.storageConnectionString = CloudConfigurationManager.GetSetting("Microsoft.Storage.ConnectionString");
-            eventHubAlertsSettings.namespaceManager = NamespaceManager.CreateFromConnectionString(CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString"));
+            eventHubDevicesSettings.storageConnectionString= CloudConfigurationManager.GetSetting("Microsoft.Storage.ConnectionString");
 
             if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")))
             {
                 // Assume we are running local: use different consumer groups to avoid colliding with a cloud instance
                 eventHubDevicesSettings.consumerGroup = "local";
-                eventHubAlertsSettings.consumerGroup = "local";
             }
             else
             {
                 eventHubDevicesSettings.consumerGroup = "website";
-                eventHubAlertsSettings.consumerGroup = "website";
             }
         }
 

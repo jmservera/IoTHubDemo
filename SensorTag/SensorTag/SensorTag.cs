@@ -14,38 +14,16 @@ namespace SensorTag
     //https://github.com/sandeepmistry/node-sensortag/blob/master/lib/cc2650.js
     //http://processors.wiki.ti.com/index.php/CC2650_SensorTag_User's_Guide
 
-
-    public class SensorTag
+    public class DoubleEventArgs : EventArgs
     {
-
-        //BTHLEDevice\{00001800-0000-1000-8000-00805f9b34fb}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&0001
-        //BTHLEDevice\{00001801-0000-1000-8000-00805f9b34fb}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&0008
-        //BTHLEDevice\{0000180a-0000-1000-8000-00805f9b34fb}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&000c
-        //BTHLEDevice\{f000aa00-0451-4000-b000-000000000000}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&001f
-        //BTHLEDevice\{f000aa20-0451-4000-b000-000000000000}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&0027
-        //BTHLEDevice\{f000aa40-0451-4000-b000-000000000000}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&002f
-        //BTHLEDevice\{f000aa80-0451-4000-b000-000000000000}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&0037
-        //BTHLEDevice\{f000aa70-0451-4000-b000-000000000000}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&003f
-        //BTHLEDevice\{0000ffe0-0000-1000-8000-00805f9b34fb}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&0047
-        //BTHLEDevice\{f000aa64-0451-4000-b000-000000000000}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&004c
-        //BTHLEDevice\{f000ac00-0451-4000-b000-000000000000}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&0051
-        //BTHLEDevice\{f000ccc0-0451-4000-b000-000000000000}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&0059
-        //BTHLEDevice\{f000ffc0-0451-4000-b000-000000000000}_Dev_VID&01000d_PID&0000_REV&0110_b0b448c09803\8&3766f1f7&0&0061
-
-        //string[] uuids = new string[] { "00001800-0000-1000-8000-00805f9b34fb",
-        //    "00001801-0000-1000-8000-00805f9b34fb",
-        //    "0000180a-0000-1000-8000-00805f9b34fb",
-        //    "f000aa00-0451-4000-b000-000000000000",
-        //    "f000aa20-0451-4000-b000-000000000000",
-        //    "f000aa40-0451-4000-b000-000000000000",
-        //    "f000aa80-0451-4000-b000-000000000000",
-        //    "f000aa70-0451-4000-b000-000000000000",
-        //    "0000ffe0-0000-1000-8000-00805f9b34fb",
-        //    "f000aa64-0451-4000-b000-000000000000",
-        //    "f000ac00-0451-4000-b000-000000000000",
-        //    "f000ccc0-0451-4000-b000-000000000000",
-        //    "f000ffc0-0451-4000-b000-000000000000" };
-
+        public double Value { get; private set; }
+        public DoubleEventArgs(double value)
+        {
+            Value = value;
+        }
+    }
+    public class SensorTag
+    {        
         const string TMP007_UUID = "F000AA00-0451-4000-B000-000000000000";
         const string HDC1000_UUID = "F000AA20-0451-4000-B000-000000000000";
         const string MPU9250_UUID = "f000aa8004514000b000000000000000";
@@ -73,19 +51,27 @@ namespace SensorTag
         List<GattDeviceService> serviceList = new List<GattDeviceService>();
         Dictionary<string, SensorTagSensor> sensors = new Dictionary<string, SensorTagSensor>();
 
+        public event EventHandler<DoubleEventArgs> HumidityReceived;
+        public event EventHandler<DoubleEventArgs> TemperatureReceived;
+
+        public bool Connected { get; set; }
+
         public async Task Init()
         {
-            var uuid = new Guid(TMP007_UUID);
-            var sensor=await getSensor(uuid);
-            sensors.Add(TMP007_UUID, sensor);
-            await sensor.EnableNotifications();
-            sensor.DataReceived += Characteristic_ValueChanged;
+            //var uuid = new Guid(TMP007_UUID);
+            //var sensor=await getSensor(uuid);
+            //sensors.Add(TMP007_UUID, sensor);
+            //await sensor.EnableNotifications();
+            //sensor.DataReceived += Characteristic_ValueChanged;
 
-            uuid = new Guid(HDC1000_UUID);
+            var uuid = new Guid(HDC1000_UUID);
             var humSensor = await getSensor(uuid);
-            sensors.Add(HDC1000_UUID, sensor);
-            await humSensor.EnableNotifications();
-            humSensor.DataReceived += HumSensor_DataReceived;
+            if (humSensor != null)
+            {
+                sensors.Add(HDC1000_UUID, humSensor);
+                await humSensor.EnableNotifications();
+                humSensor.DataReceived += HumSensor_DataReceived;
+            }
         }
 
         private void HumSensor_DataReceived(GattCharacteristic sender, GattValueChangedEventArgs args)
@@ -104,30 +90,46 @@ namespace SensorTag
 
             System.Diagnostics.Debug.WriteLine($"temp: {temp} hum: {hum}");
 
+            if (TemperatureReceived != null)
+            {
+                TemperatureReceived(this, new DoubleEventArgs(temp));
+            }
+            if (HumidityReceived != null)
+            {
+                HumidityReceived(this, new DoubleEventArgs(hum));
+            }
         }
 
         private async Task<SensorTagSensor> getSensor(Guid uuid)
         {
             var serv = await getService(uuid);
-            var sensor = new SensorTagSensor(uuid, serv);
-            serviceList.Add(serv);
-            var chars = serv.GetAllCharacteristics();
-            foreach (var characteristic in chars)
+            if (serv != null)
             {
-                if((characteristic.Uuid.ToByteArray()[0] & (byte)3) == (byte)1)
+                Connected = true;
+
+                var sensor = new SensorTagSensor(uuid, serv);
+                serviceList.Add(serv);
+                var chars = serv.GetAllCharacteristics();
+                foreach (var characteristic in chars)
                 {
-                    sensor.Data = characteristic;
-                } else
-                if ((characteristic.Uuid.ToByteArray()[0] & (byte)3) == (byte)2)
-                {
-                    sensor.Configuration = characteristic;
-                }else 
-                if((characteristic.Uuid.ToByteArray()[0] & (byte)3) == (byte)3)
-                {
-                    sensor.Period = characteristic;
+                    if ((characteristic.Uuid.ToByteArray()[0] & (byte)3) == (byte)1)
+                    {
+                        sensor.Data = characteristic;
+                    }
+                    else
+                    if ((characteristic.Uuid.ToByteArray()[0] & (byte)3) == (byte)2)
+                    {
+                        sensor.Configuration = characteristic;
+                    }
+                    else
+                    if ((characteristic.Uuid.ToByteArray()[0] & (byte)3) == (byte)3)
+                    {
+                        sensor.Period = characteristic;
+                    }
                 }
+                return sensor;
             }
-            return sensor;
+            return null;
         }
 
         public void CloseAll()
@@ -225,18 +227,9 @@ namespace SensorTag
                 firstTimeData = true;
             }
         }
-        bool firstTimeData;
-        private async void getData(GattCharacteristic sender, GattValueChangedEventArgs args)
+
+        private void getData(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
-            //if (firstTimeData)
-            //{
-            //    using (var writer = new DataWriter())
-            //    {
-            //        writer.WriteByte((Byte)0x0);
-            //        await Configuration.WriteValueAsync(writer.DetachBuffer());
-            //        firstTimeData = false;
-            //    }
-            //}
             if (DataReceived != null)
             {
                 DataReceived(sender, args);

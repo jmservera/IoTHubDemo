@@ -6,11 +6,14 @@ using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
+using Windows.Foundation;
 using Windows.Storage.Streams;
 
 namespace SensorTag
 {
     //https://github.com/sandeepmistry/node-sensortag/blob/master/lib/cc2650.js
+    //http://processors.wiki.ti.com/index.php/CC2650_SensorTag_User's_Guide
+
 
     public class SensorTag
     {
@@ -44,6 +47,7 @@ namespace SensorTag
         //    "f000ffc0-0451-4000-b000-000000000000" };
 
         const string TMP007_UUID = "F000AA00-0451-4000-B000-000000000000";
+        const string HDC1000_UUID = "F000AA20-0451-4000-B000-000000000000";
         const string MPU9250_UUID = "f000aa8004514000b000000000000000";
         const string BAROMETRIC_PRESSURE_UUID = "f000aa4004514000b000000000000000";
         const string IO_UUID = "f000aa6404514000b000000000000000";
@@ -67,33 +71,63 @@ namespace SensorTag
         const string LUXOMETER_PERIOD_UUID = "f000aa7304514000b000000000000000";
 
         List<GattDeviceService> serviceList = new List<GattDeviceService>();
+        Dictionary<string, SensorTagSensor> sensors = new Dictionary<string, SensorTagSensor>();
 
         public async Task Init()
         {
             var uuid = new Guid(TMP007_UUID);
+            var sensor=await getSensor(uuid);
+            sensors.Add(TMP007_UUID, sensor);
+            await sensor.EnableNotifications();
+            sensor.DataReceived += Characteristic_ValueChanged;
+
+            uuid = new Guid(HDC1000_UUID);
+            var humSensor = await getSensor(uuid);
+            sensors.Add(HDC1000_UUID, sensor);
+            await humSensor.EnableNotifications();
+            humSensor.DataReceived += HumSensor_DataReceived;
+        }
+
+        private void HumSensor_DataReceived(GattCharacteristic sender, GattValueChangedEventArgs args)
+        {
+            byte[] bArray = new byte[args.CharacteristicValue.Length];
+            DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(bArray);
+            UInt16 rawHum = (UInt16)(((UInt16)bArray[3] << 8) + (UInt16)bArray[2]);
+
+            Int16 rawTemp = (Int16)(((UInt16)bArray[1] << 8) + (UInt16)bArray[0]);
+
+            //-- calculate temperature [°C]
+            var temp = ((double)rawTemp / 65536) * 165 - 40;
+
+            //-- calculate relative humidity [%RH]
+            var hum = ((double)rawHum / 65536) * 100;
+
+            System.Diagnostics.Debug.WriteLine($"temp: {temp} hum: {hum}");
+
+        }
+
+        private async Task<SensorTagSensor> getSensor(Guid uuid)
+        {
             var serv = await getService(uuid);
+            var sensor = new SensorTagSensor(uuid, serv);
             serviceList.Add(serv);
-            var chars=serv.GetAllCharacteristics();
+            var chars = serv.GetAllCharacteristics();
             foreach (var characteristic in chars)
             {
-                System.Diagnostics.Debug.WriteLine(characteristic.UserDescription);
-                if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Notify))
+                if((characteristic.Uuid.ToByteArray()[0] & (byte)3) == (byte)1)
                 {
-                    await characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
-                    characteristic.ValueChanged += Characteristic_ValueChanged;
-                }
-                if (characteristic.CharacteristicProperties.HasFlag(GattCharacteristicProperties.Write))
+                    sensor.Data = characteristic;
+                } else
+                if ((characteristic.Uuid.ToByteArray()[0] & (byte)3) == (byte)2)
                 {
-                    var writer = new Windows.Storage.Streams.DataWriter();
-                    // Special value for Gyroscope to enable all 3 axes
-                    //if (sensor == GYROSCOPE)
-                    //    writer.WriteByte((Byte)0x07);
-                    //else
-                    writer.WriteByte((Byte)0x01);
-
-                    await characteristic.WriteValueAsync(writer.DetachBuffer());
+                    sensor.Configuration = characteristic;
+                }else 
+                if((characteristic.Uuid.ToByteArray()[0] & (byte)3) == (byte)3)
+                {
+                    sensor.Period = characteristic;
                 }
             }
+            return sensor;
         }
 
         public void CloseAll()
@@ -165,5 +199,57 @@ namespace SensorTag
 
             return null;
         }
+    }
+
+    public class SensorTagSensor
+    {
+        public GattCharacteristic Data { get; set; }
+        public GattCharacteristic Configuration { get; set; }
+        public GattCharacteristic Period { get; set; }
+        public Guid Id { get; private set; }
+
+        public GattDeviceService Service { get; private set; }
+        public async Task EnableNotifications()
+        {
+            await Data.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
+            Data.ValueChanged += getData;
+
+            using (var writer = new DataWriter())
+            {
+                // Special value for Gyroscope to enable all 3 axes
+                //if (sensor == GYROSCOPE)
+                //    writer.WriteByte((Byte)0x07);
+                //else
+                writer.WriteByte((Byte)0x01);
+                await Configuration.WriteValueAsync(writer.DetachBuffer());
+                firstTimeData = true;
+            }
+        }
+        bool firstTimeData;
+        private async void getData(GattCharacteristic sender, GattValueChangedEventArgs args)
+        {
+            //if (firstTimeData)
+            //{
+            //    using (var writer = new DataWriter())
+            //    {
+            //        writer.WriteByte((Byte)0x0);
+            //        await Configuration.WriteValueAsync(writer.DetachBuffer());
+            //        firstTimeData = false;
+            //    }
+            //}
+            if (DataReceived != null)
+            {
+                DataReceived(sender, args);
+            }
+        }
+
+        public event Action<GattCharacteristic, GattValueChangedEventArgs> DataReceived;
+
+        public SensorTagSensor(Guid id, GattDeviceService service)
+        {
+            Id = id;
+            Service = service;
+        }
+
     }
 }

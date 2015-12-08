@@ -27,9 +27,9 @@ namespace DhtView
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        const string iotHubUri = "jmservera.azure-devices.net";
-        const string rpiName = "Raspi001";
-        const string deviceKey = "UqVO9AzslYU8R8A7wek3pn7DT1gnCbuzI611umSasxc=";
+        const string iotHubUri = "[yourIoTHub].azure-devices.net";
+        const string deviceName = "Raspi001";
+        const string deviceKey = "[yourdevicekey]";
         const string GUID = "58980B74-8117-464A-A9FA-1850B0E2F0B3"; //todo create a unique guid per device
         const string ORGANIZATION = "Microsoft";
         const string DISPLAYNAME = "Raspberry Pi 2 DHT22";
@@ -53,7 +53,7 @@ namespace DhtView
 
         private async void InitializeSensor()
         {
-            var key = AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(rpiName, deviceKey);
+            var key = AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(deviceName, deviceKey);
             DeviceClient deviceClient = DeviceClient.Create(iotHubUri, key, TransportType.Http1);
 
             Task ts = SendEvents(deviceClient);

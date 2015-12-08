@@ -46,6 +46,7 @@ namespace ConnectTheDotsWebSite
         public EventProcessorHost processorHost { get; set; }
         public EventProcessorOptions processorHostOptions { get; set; }
         public EventHubClient client { get; set; }
+        public NamespaceManager namespaceManager { get; set; }
         public string storageConnectionString { get; set; }
     }
 
@@ -57,6 +58,8 @@ namespace ConnectTheDotsWebSite
     public class Global : System.Web.HttpApplication
     {
         EventHubSettings eventHubDevicesSettings;
+        EventHubSettings eventHubAlertsSettings;
+
         public static GlobalSettings globalSettings;
 
         protected void Application_Start(Object sender, EventArgs e)
@@ -74,12 +77,14 @@ namespace ConnectTheDotsWebSite
 
             // Create EventProcessorHost clients
             CreateEventProcessorHostClient(ref eventHubDevicesSettings);
+            CreateEventProcessorHostClient(ref eventHubAlertsSettings);
         }
 
         protected void Application_End(Object sender, EventArgs e)
         {
             Trace.TraceInformation("Unregistering EventProcessorHosts");
             eventHubDevicesSettings.processorHost.UnregisterEventProcessorAsync().Wait();
+            eventHubAlertsSettings.processorHost.UnregisterEventProcessorAsync().Wait();
         }
         private void CreateEventProcessorHostClient(ref EventHubSettings eventHubSettings)
         {
@@ -88,7 +93,44 @@ namespace ConnectTheDotsWebSite
             {
                 eventHubSettings.client = EventHubClient.CreateFromConnectionString(eventHubSettings.connectionString,
                                                                                 eventHubSettings.name);
-               
+
+
+                if (eventHubSettings.name == "alerts")
+                {
+                    // Delete and recreate the consumer group
+                    // this allows to ensure we will start receiving only fresh messages when the site starts
+
+                    foreach (ConsumerGroupDescription consumerGroupDesc in eventHubSettings.namespaceManager.GetConsumerGroups(eventHubSettings.client.Path))
+                    {
+                        // We remove any previously created consumergroups containing the word WebSite in the name
+                        if (consumerGroupDesc.Name.ToLowerInvariant().Contains("website") &&
+                            !String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME"))
+                            ||
+                            consumerGroupDesc.Name.ToLowerInvariant().Contains("local") &&
+                            String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")))
+                        {
+                            eventHubSettings.namespaceManager.DeleteConsumerGroup(eventHubSettings.name, consumerGroupDesc.Name);
+                        }
+                    }
+
+                    //Workaround to delete old blobs related to old consumer groups
+                    CloudBlobContainer eventHubBlobContainer = BlobHelper.SetUpContainer(eventHubSettings.storageConnectionString, eventHubSettings.name);
+
+                    string blobPerfix = String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")) ? "local" : "website";
+
+                    IEnumerable<CloudBlockBlob> oldBlobs = eventHubBlobContainer.ListBlobs(blobPerfix, true, BlobListingDetails.All).OfType<CloudBlockBlob>();
+                    foreach (var blob in oldBlobs)
+                    {
+                        try
+                        {
+                            blob.DeleteIfExists();
+                        }
+                        catch (Exception)
+                        {
+                            Debug.Print("Error happened while trying to delete old ConsumerGroup related blob.");
+                        }
+                    }
+                }
             }
             catch(Exception ex)
             {
@@ -99,10 +141,13 @@ namespace ConnectTheDotsWebSite
             {
                 try
                 {
-                    // We create a new consumer group with a new mame each time to 
-                    eventHubSettings.consumerGroup = "website";// += DateTime.UtcNow.Ticks.ToString();
-                    //eventHubSettings.namespaceManager.CreateConsumerGroupIfNotExists(eventHubSettings.name,
-                    //    eventHubSettings.consumerGroup);
+                    if (eventHubSettings.name == "alerts")
+                    {
+                        // We create a new consumer group with a new mame each time to 
+                        eventHubSettings.consumerGroup += DateTime.UtcNow.Ticks.ToString();
+                                                                   eventHubSettings.namespaceManager.CreateConsumerGroupIfNotExists(eventHubSettings.name,
+                                                                       eventHubSettings.consumerGroup);
+                    }
                 }
                 catch(Exception ex)
                 {
@@ -152,6 +197,13 @@ namespace ConnectTheDotsWebSite
             eventHubDevicesSettings.connectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionStringDevices");
             eventHubDevicesSettings.name = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.EventHubDevices").ToLowerInvariant();
             eventHubDevicesSettings.storageConnectionString= CloudConfigurationManager.GetSetting("Microsoft.Storage.ConnectionString");
+            eventHubDevicesSettings.namespaceManager = NamespaceManager.CreateFromConnectionString(CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString"));
+
+            // Read settings for Alerts Event Hub
+            eventHubAlertsSettings.connectionString = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionStringAlerts");
+            eventHubAlertsSettings.name = CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.EventHubAlerts").ToLowerInvariant();
+            eventHubAlertsSettings.storageConnectionString = CloudConfigurationManager.GetSetting("Microsoft.Storage.ConnectionString");
+            eventHubAlertsSettings.namespaceManager = NamespaceManager.CreateFromConnectionString(CloudConfigurationManager.GetSetting("Microsoft.ServiceBus.ConnectionString"));
 
             if (String.IsNullOrEmpty(Environment.GetEnvironmentVariable("WEBSITE_SITE_NAME")))
             {

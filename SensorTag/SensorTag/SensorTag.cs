@@ -224,7 +224,6 @@ namespace SensorTag
                 //else
                 writer.WriteByte((Byte)0x01);
                 await Configuration.WriteValueAsync(writer.DetachBuffer());
-                firstTimeData = true;
             }
         }
 

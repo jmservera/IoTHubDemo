@@ -53,6 +53,8 @@ namespace SensorTag
 
         public event EventHandler<DoubleEventArgs> HumidityReceived;
         public event EventHandler<DoubleEventArgs> TemperatureReceived;
+        public event EventHandler<DoubleEventArgs> IrTemperatureReceived;
+        public event EventHandler<DoubleEventArgs> IrAmbTemperatureReceived;
 
         public bool Connected { get; set; }
 
@@ -72,12 +74,46 @@ namespace SensorTag
                 await humSensor.EnableNotifications();
                 humSensor.DataReceived += HumSensor_DataReceived;
             }
+
+            var irSensor = await getSensor(new Guid(TMP007_UUID));
+            if(irSensor!= null)
+            {
+                sensors.Add(TMP007_UUID, irSensor);
+                await irSensor.EnableNotifications();
+                irSensor.DataReceived += IrSensor_DataReceived;
+            }
+        }
+
+        private void IrSensor_DataReceived(GattCharacteristic sender, GattValueChangedEventArgs args)
+        {
+            byte[] bArray = getDataValue(args);
+            UInt16 rawObjTemp = (UInt16)(((UInt16)bArray[1] << 8) + (UInt16)bArray[0]);
+            UInt16 rawAmbTemp = (UInt16)(((UInt16)bArray[3] << 8) + (UInt16)bArray[2]);
+
+
+            const float SCALE_LSB = 0.03125f;
+            double t;
+            int it;
+
+            it = (int)((rawObjTemp) >> 2);
+            t = ((double)(it)) * SCALE_LSB;
+            if(IrTemperatureReceived!= null)
+            {
+                IrTemperatureReceived(this, new DoubleEventArgs(t));
+            }
+
+            
+            it = (int)((rawAmbTemp) >> 2);
+            t = ((double)it) * SCALE_LSB;
+            if (IrAmbTemperatureReceived != null)
+            {
+                IrAmbTemperatureReceived(this, new DoubleEventArgs(t));
+            }
         }
 
         private void HumSensor_DataReceived(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
-            byte[] bArray = new byte[args.CharacteristicValue.Length];
-            DataReader.FromBuffer(args.CharacteristicValue).ReadBytes(bArray);
+            byte[] bArray = getDataValue(args);
             UInt16 rawHum = (UInt16)(((UInt16)bArray[3] << 8) + (UInt16)bArray[2]);
 
             Int16 rawTemp = (Int16)(((UInt16)bArray[1] << 8) + (UInt16)bArray[0]);
@@ -98,6 +134,16 @@ namespace SensorTag
             {
                 HumidityReceived(this, new DoubleEventArgs(hum));
             }
+        }
+
+        private static byte[] getDataValue(GattValueChangedEventArgs args)
+        {
+            byte[] bArray = new byte[args.CharacteristicValue.Length];
+            using (var r = DataReader.FromBuffer(args.CharacteristicValue))
+            {
+                r.ReadBytes(bArray);
+            }
+            return bArray;
         }
 
         private async Task<SensorTagSensor> getSensor(Guid uuid)

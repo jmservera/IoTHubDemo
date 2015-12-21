@@ -26,10 +26,13 @@ namespace SensorTag
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        const string iotHubUri = "[yourIoTHub].azure-devices.net";
+        const string iotHubUri = "jmservera.azure-devices.net";
         const string deviceName = "SensorTag";
-        const string deviceKey = "[YourKey]";
-        const string GUID = "[Create a GUID]"; //todo create a unique guid per device
+        const string deviceKey = "wSn3ojC9nKFIVuXFcJwKgCC3ixLhMV9LhDthZBniln4=";
+        const string GUID = "ECD59A6D-1D0E-4CE2-A839-31167815A22D"; //todo create a unique guid per device
+        const string GUIDir = "ECD59A6D-1D0E-4CE2-A839-31167815A22E"; //todo create a unique guid per device
+        const string GUIDAMB = "ECD59A6D-1D0E-4CE2-A839-31167815A2F"; //todo create a unique guid per device
+
         const string ORGANIZATION = "Microsoft";
         const string DISPLAYNAME = "SensorTag 2650";
         const string LOCATION = "Madrid"; //todo config the location
@@ -63,34 +66,38 @@ namespace SensorTag
             }
             tag.HumidityReceived += Tag_HumidityReceived;
             tag.TemperatureReceived += Tag_TemperatureReceived;
+            tag.IrAmbTemperatureReceived += Tag_IrAmbTemperatureReceived;
+            tag.IrTemperatureReceived += Tag_IrTemperatureReceived;
+        }
+
+        private async void Tag_IrTemperatureReceived(object sender, DoubleEventArgs e)
+        {
+            await sendValue(e, GUIDir, ORGANIZATION, DISPLAYNAME + "Ir", LOCATION, TEMPMEASURE, TEMPUNITS);
+        }
+
+        private async void Tag_IrAmbTemperatureReceived(object sender, DoubleEventArgs e)
+        {
+            await sendValue(e, GUIDAMB, ORGANIZATION, DISPLAYNAME + "Amb Ir", LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
         private async void Tag_TemperatureReceived(object sender, DoubleEventArgs e)
         {
-            try
-            {
-                var timeCreated = $"{DateTime.UtcNow:u}".Replace(' ', 'T');
-                log($"Temp:{e.Value} Time:{timeCreated}");
-
-                string dataBuffer = string.Format(jsonFormat,
-                    GUID, ORGANIZATION, DISPLAYNAME, LOCATION, TEMPMEASURE, TEMPUNITS, e.Value, timeCreated);
-                Message eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
-                await deviceClient.SendEventAsync(eventMessage);
-            }
-            catch (Exception ex)
-            {
-                log(ex.Message);
-            }
+            await sendValue(e, GUID, ORGANIZATION, DISPLAYNAME, LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
         private async void Tag_HumidityReceived(object sender, DoubleEventArgs e)
         {
+            await sendValue(e, GUID,ORGANIZATION,DISPLAYNAME,LOCATION,HUMIDMEASURE,HUMIDUNITS);
+        }
+
+        private async Task sendValue(DoubleEventArgs e, string guid, string org, string display, string location, string measure, string units)
+        {
             try
             {
                 var timeCreated = $"{DateTime.UtcNow:u}".Replace(' ', 'T');
-                log($"Hum:{e.Value} Time:{timeCreated}");
+                log($"{display} {measure}:{e.Value} Time:{timeCreated}");
                 var dataBuffer = string.Format(jsonFormat,
-                    GUID, ORGANIZATION, DISPLAYNAME, LOCATION, HUMIDMEASURE, HUMIDUNITS, e.Value, timeCreated);
+                    guid, org, display, location, measure, units, e.Value, timeCreated);
                 var eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
                 await deviceClient.SendEventAsync(eventMessage);
             }

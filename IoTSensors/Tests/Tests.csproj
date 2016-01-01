@@ -129,10 +129,6 @@
       <Project>{cef396c8-5bed-4510-b252-fef0d5a4f52d}</Project>
       <Name>DhtReadService</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ReadService\ReadService.csproj">
-      <Project>{cddede11-1319-482f-b893-e9fe1457f7c6}</Project>
-      <Name>ReadService</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />

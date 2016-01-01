@@ -1,5 +1,6 @@
 ﻿using DhtReadService;
 using Microsoft.Azure.Devices.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,9 +28,37 @@ namespace DhtView
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        const string iotHubUri = "jmservera2.azure-devices.net";
-        const string deviceName = "Raspi001";
-        const string deviceKey = "UqVO9AzslYU8R8A7wek3pn7DT1gnCbuzI611umSasxc=";
+
+        /// <summary>
+        /// A Configuration class, just fill the config.json file
+        /// with the form:
+        /// 
+        /// {
+        ///  "IotHubUri": "[hubname].azure-devices.net",
+        ///  "DeviceName": "[registeredname]",
+        ///  "DeviceKey": "[registeredkey]"
+        /// }
+        /// </summary>
+        public class Config
+        {
+            public string IotHubUri { get; set; }
+            public string DeviceName { get; set; }
+            public string DeviceKey { get; set; }
+
+            static Config _config;
+            public static Config Default
+            {
+                get
+                {
+                    if (_config == null)
+                    {
+                        _config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
+                    }
+                    return _config;
+                }
+            }
+        }
+
         const string GUID = "58980B74-8117-464A-A9FA-1850B0E2F0B3"; //todo create a unique guid per device
         const string ORGANIZATION = "Microsoft";
         const string DISPLAYNAME = "Raspberry Pi 2 DHT22";
@@ -53,8 +82,9 @@ namespace DhtView
 
         private async void InitializeSensor()
         {
-            var key = AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(deviceName, deviceKey);
-            DeviceClient deviceClient = DeviceClient.Create(iotHubUri, key, TransportType.Http1);
+            var key = AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(
+                Config.Default.DeviceName, Config.Default.DeviceKey);
+            DeviceClient deviceClient = DeviceClient.Create(Config.Default.IotHubUri, key, TransportType.Http1);
 
             Task ts = SendEvents(deviceClient);
             Task tr = ReceiveCommands(deviceClient);

@@ -1,4 +1,6 @@
-﻿using Microsoft.Azure.Devices.Client;
+﻿using Common;
+using Microsoft.Azure.Devices.Client;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,9 +28,6 @@ namespace SensorTag
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        const string iotHubUri = "jmservera.azure-devices.net";
-        const string deviceName = "SensorTag";
-        const string deviceKey = "wSn3ojC9nKFIVuXFcJwKgCC3ixLhMV9LhDthZBniln4=";
         const string GUID = "ECD59A6D-1D0E-4CE2-A839-31167815A22D"; //todo create a unique guid per device
         const string GUIDir = "ECD59A6D-1D0E-4CE2-A839-31167815A22E"; //todo create a unique guid per device
         const string GUIDAMB = "ECD59A6D-1D0E-4CE2-A839-31167815A2F"; //todo create a unique guid per device
@@ -40,15 +39,14 @@ namespace SensorTag
         const string HUMIDMEASURE = "Humidity";
         const string TEMPUNITS = "C";
         const string HUMIDUNITS = "%";
-        const string jsonFormat = "{{\"guid\":\"{0}\", \"organization\":\"{1}\", \"displayname\": \"{2}\", \"location\": \"{3}\", \"measurename\": \"{4}\", \"unitofmeasure\": \"{5}\", \"value\":{6}, \"timecreated\":\"{7}\" }}";
 
         DeviceClient deviceClient;
 
         public MainPage()
         {
             this.InitializeComponent();
-            var key = AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(deviceName, deviceKey);
-            deviceClient = DeviceClient.Create(iotHubUri, key, TransportType.Http1);
+            var key = AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(Config.Default.DeviceName, Config.Default.DeviceKey);
+            deviceClient = DeviceClient.Create(Config.Default.IotHubUri, key, TransportType.Http1);
             init();
         }
 
@@ -94,10 +92,20 @@ namespace SensorTag
         {
             try
             {
-                var timeCreated = $"{DateTime.UtcNow:u}".Replace(' ', 'T');
-                log($"{display} {measure}:{e.Value} Time:{timeCreated}");
-                var dataBuffer = string.Format(jsonFormat,
-                    guid, org, display, location, measure, units, e.Value, timeCreated);
+                log($"{display} {measure}:{e.Value} Time:{DateTime.Now}");
+
+                var info = new SensorInfo
+                {
+                    Guid = guid,
+                    Organization = org,
+                    DisplayName = display,
+                    Location = location,
+                    MeasureName = measure,
+                    UnitOfMeasure = units,
+                    Value = e.Value,
+                    TimeCreated = DateTime.UtcNow
+                };
+                string dataBuffer = JsonConvert.SerializeObject(info);
                 var eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
                 await deviceClient.SendEventAsync(eventMessage);
             }

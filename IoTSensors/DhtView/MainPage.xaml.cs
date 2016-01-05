@@ -67,7 +67,6 @@ namespace DhtView
         const string HUMIDMEASURE = "Humidity";
         const string TEMPUNITS = "C";
         const string HUMIDUNITS = "%";
-        const string jsonFormat = "{{\"guid\":\"{0}\", \"organization\":\"{1}\", \"displayname\": \"{2}\", \"location\": \"{3}\", \"measurename\": \"{4}\", \"unitofmeasure\": \"{5}\", \"value\":{6}, \"timecreated\":\"{7}\" }}";
 
         const int pinNumber = 4;
 
@@ -94,7 +93,7 @@ namespace DhtView
 
         private async Task ReceiveCommands(DeviceClient deviceClient)
         {
-            System.Diagnostics.Debug.WriteLine("\nDevice waiting for commands from IoTHub...\n");
+            Logger.LogInfo("Device waiting for commands from IoTHub...");
             Message receivedMessage;
             string messageData;
             int recoverTimeout = 1000;
@@ -106,7 +105,7 @@ namespace DhtView
                     if (receivedMessage != null)
                     {
                         messageData = Encoding.ASCII.GetString(receivedMessage.GetBytes());
-                        Debug.WriteLine(String.Format("\t{0}> Received message: {1}", DateTime.Now.ToLocalTime(), messageData));
+                        Logger.LogInfo($"\t> Received message: {messageData}");
                         messages.Text = $"{DateTime.Now.ToLocalTime()}> Received message: {messageData}";
                         await deviceClient.CompleteAsync(receivedMessage);
                     }
@@ -114,7 +113,7 @@ namespace DhtView
                 }
                 catch (Exception ex)
                 {
-                    Debug.WriteLine(ex.Message);
+                    Logger.LogException(ex);
                     await Task.Delay(recoverTimeout);
                     recoverTimeout *= 10; // increment timeout for connection recovery
                     if (recoverTimeout > 600000)//set a maximum timeout
@@ -144,7 +143,7 @@ namespace DhtView
                         }
                         catch (Exception ex)
                         {
-                            Debug.WriteLine(ex.Message);
+                            Logger.LogException(ex);
                         }
                     }
                     //sensor should be read every 2 seconds
@@ -153,25 +152,41 @@ namespace DhtView
             }
             catch (Exception ex)
             {
-                Debug.WriteLine(string.Format("{0}: {1}", ex.Message, ex.StackTrace));
+                Logger.LogException(ex);
             }
         }
 
+
+
         private static async Task<string> sendData(DeviceClient deviceClient, Dht11Reading data)
         {
-            var timeCreated = $"{DateTime.UtcNow:u}".Replace(' ', 'T');
-            Debug.WriteLine($"Temp:{data.Temperature} Hum:{data.Humidity} Time:{timeCreated}");
+            Logger.LogInfo($"Temp:{data.Temperature} Hum:{data.Humidity} Time:{DateTime.UtcNow}");
 
-            string dataBuffer = string.Format(jsonFormat,
-                GUID, ORGANIZATION, DISPLAYNAME, LOCATION, TEMPMEASURE, TEMPUNITS, data.Temperature, timeCreated);
+            var info = new SensorInfo
+            {
+                Guid = GUID,
+                Organization = ORGANIZATION,
+                Displayname = DISPLAYNAME,
+                Location = LOCATION,
+                Measurename = TEMPMEASURE,
+                Unitofmeasure = TEMPUNITS,
+                Value = data.Temperature,
+                Timecreated = DateTime.UtcNow
+            };
+            string dataBuffer = JsonConvert.SerializeObject(info);
             Message eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
             await deviceClient.SendEventAsync(eventMessage);
-            dataBuffer = string.Format(jsonFormat,
-                GUID, ORGANIZATION, DISPLAYNAME, LOCATION, HUMIDMEASURE, HUMIDUNITS, data.Humidity, timeCreated);
+
+            info.Measurename = HUMIDMEASURE;
+            info.Unitofmeasure = HUMIDUNITS;
+            info.Value = data.Humidity;
+            dataBuffer = JsonConvert.SerializeObject(info);
             eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
             await deviceClient.SendEventAsync(eventMessage);
             return dataBuffer;
         }
+
+        
 
         private async void refreshData(Dht11Reading data)
         {

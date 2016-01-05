@@ -1,6 +1,6 @@
 ﻿{
   "dependencies": {
-    "Microsoft.Azure.Devices.Client": "1.0.0-preview-006",
+    "Microsoft.Azure.Devices.Client": "1.0.0-preview-009",
     "Microsoft.NETCore.UniversalWindowsPlatform": "5.0.0",
     "Newtonsoft.Json": "8.0.1"
   },

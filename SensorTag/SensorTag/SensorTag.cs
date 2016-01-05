@@ -65,7 +65,14 @@ namespace SensorTag
             //sensors.Add(TMP007_UUID, sensor);
             //await sensor.EnableNotifications();
             //sensor.DataReceived += Characteristic_ValueChanged;
-
+            var irSensor = await getSensor(new Guid(TMP007_UUID));
+            if (irSensor != null)
+            {
+                sensors.Add(TMP007_UUID, irSensor);
+                await irSensor.EnableNotifications();
+                irSensor.DataReceived += IrSensor_DataReceived;
+            }
+            await Task.Delay(1000);
             var uuid = new Guid(HDC1000_UUID);
             var humSensor = await getSensor(uuid);
             if (humSensor != null)
@@ -75,13 +82,7 @@ namespace SensorTag
                 humSensor.DataReceived += HumSensor_DataReceived;
             }
 
-            var irSensor = await getSensor(new Guid(TMP007_UUID));
-            if(irSensor!= null)
-            {
-                sensors.Add(TMP007_UUID, irSensor);
-                await irSensor.EnableNotifications();
-                irSensor.DataReceived += IrSensor_DataReceived;
-            }
+
         }
 
         private void IrSensor_DataReceived(GattCharacteristic sender, GattValueChangedEventArgs args)
@@ -257,10 +258,11 @@ namespace SensorTag
         public Guid Id { get; private set; }
 
         public GattDeviceService Service { get; private set; }
+
         public async Task EnableNotifications()
         {
-            await Data.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
             Data.ValueChanged += getData;
+            await Data.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
 
             using (var writer = new DataWriter())
             {

@@ -1,4 +1,5 @@
-﻿using DhtReadService;
+﻿using Common;
+using DhtReadService;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
 using System;
@@ -28,37 +29,6 @@ namespace DhtView
     /// </summary>
     public sealed partial class MainPage : Page
     {
-
-        /// <summary>
-        /// A Configuration class, just fill the config.json file
-        /// with the form:
-        /// 
-        /// {
-        ///  "IotHubUri": "[hubname].azure-devices.net",
-        ///  "DeviceName": "[registeredname]",
-        ///  "DeviceKey": "[registeredkey]"
-        /// }
-        /// </summary>
-        public class Config
-        {
-            public string IotHubUri { get; set; }
-            public string DeviceName { get; set; }
-            public string DeviceKey { get; set; }
-
-            static Config _config;
-            public static Config Default
-            {
-                get
-                {
-                    if (_config == null)
-                    {
-                        _config = JsonConvert.DeserializeObject<Config>(File.ReadAllText("config.json"));
-                    }
-                    return _config;
-                }
-            }
-        }
-
         const string GUID = "58980B74-8117-464A-A9FA-1850B0E2F0B3"; //todo create a unique guid per device
         const string ORGANIZATION = "Microsoft";
         const string DISPLAYNAME = "Raspberry Pi 2 DHT22";
@@ -166,19 +136,19 @@ namespace DhtView
             {
                 Guid = GUID,
                 Organization = ORGANIZATION,
-                Displayname = DISPLAYNAME,
+                DisplayName = DISPLAYNAME,
                 Location = LOCATION,
-                Measurename = TEMPMEASURE,
-                Unitofmeasure = TEMPUNITS,
+                MeasureName = TEMPMEASURE,
+                UnitOfMeasure = TEMPUNITS,
                 Value = data.Temperature,
-                Timecreated = DateTime.UtcNow
+                TimeCreated = DateTime.UtcNow
             };
             string dataBuffer = JsonConvert.SerializeObject(info);
             Message eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
             await deviceClient.SendEventAsync(eventMessage);
 
-            info.Measurename = HUMIDMEASURE;
-            info.Unitofmeasure = HUMIDUNITS;
+            info.MeasureName = HUMIDMEASURE;
+            info.UnitOfMeasure = HUMIDUNITS;
             info.Value = data.Humidity;
             dataBuffer = JsonConvert.SerializeObject(info);
             eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));

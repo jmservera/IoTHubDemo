@@ -99,12 +99,10 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Logger.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SensorInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -133,6 +131,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Common\Common.csproj">
+      <Project>{5dd7bf85-b31e-40a1-969e-8756319b4d2e}</Project>
+      <Name>Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\DhtReadService\DhtReadService.csproj">
       <Project>{cef396c8-5bed-4510-b252-fef0d5a4f52d}</Project>
       <Name>DhtReadService</Name>

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DhtView
+namespace Common
 {
     public static class Logger
     {

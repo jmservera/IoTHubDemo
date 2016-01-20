@@ -1,0 +1,6 @@
+﻿/// A Configuration class, just fill the config.json file with the form:
+{
+ "IotHubUri": "[hubname].azure-devices.net",
+ "DeviceName": "[registeredname]",
+ "DeviceKey": "[registeredkey]"
+}

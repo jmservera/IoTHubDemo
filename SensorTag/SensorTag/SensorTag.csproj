@@ -95,6 +95,7 @@
     <Content Include="config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="config.json.demo" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>

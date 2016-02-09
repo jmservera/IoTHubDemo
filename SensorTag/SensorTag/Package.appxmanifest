@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="092a32d1-963c-483a-8e9c-c3e2647e558c" Publisher="CN=juanserv" Version="1.0.0.0" />
+  <Identity Name="SensorTag.092a32d1-963c-483a-8e9c-c3e2647e558c" Publisher="CN=juanserv" Version="1.0.0.0" />
   <mp:PhoneIdentity PhoneProductId="092a32d1-963c-483a-8e9c-c3e2647e558c" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>SensorTag</DisplayName>

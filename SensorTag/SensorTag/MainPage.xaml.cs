@@ -117,7 +117,7 @@ namespace SensorTag
 
         private async void log(string message)
         {
-            Debug.WriteLine(message);
+            Logger.Log(message);
             await logger.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
             {
                 logger.Text = message + Environment.NewLine + logger.Text;

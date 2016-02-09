@@ -68,16 +68,14 @@ namespace SensorTag
 
             var uuid = new Guid(HDC1000_UUID);
             var humSensor = await getSensor(uuid);
-            if (humSensor != null)
+            var irSensor = await getSensor(new Guid(TMP007_UUID));
+
+            if (humSensor != null && irSensor!=null)
             {
                 sensors.Add(HDC1000_UUID, humSensor);
                 await humSensor.EnableNotifications();
                 humSensor.DataReceived += HumSensor_DataReceived;
-            }
 
-            var irSensor = await getSensor(new Guid(TMP007_UUID));
-            if(irSensor!= null)
-            {
                 sensors.Add(TMP007_UUID, irSensor);
                 await irSensor.EnableNotifications();
                 irSensor.DataReceived += IrSensor_DataReceived;
@@ -92,11 +90,10 @@ namespace SensorTag
 
 
             const float SCALE_LSB = 0.03125f;
-            double t;
             int it;
 
             it = (int)((rawObjTemp) >> 2);
-            t = ((double)(it)) * SCALE_LSB;
+            var t = ((double)(it)) * SCALE_LSB;
             if(IrTemperatureReceived!= null)
             {
                 IrTemperatureReceived(this, new DoubleEventArgs(t));
@@ -104,7 +101,7 @@ namespace SensorTag
 
             
             it = (int)((rawAmbTemp) >> 2);
-            t = ((double)it) * SCALE_LSB;
+            var t2 = ((double)it) * SCALE_LSB;
             if (IrAmbTemperatureReceived != null)
             {
                 IrAmbTemperatureReceived(this, new DoubleEventArgs(t));

@@ -1,9 +1,11 @@
-﻿using System;
+﻿using Microsoft.IoT.Lightning.Providers;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Devices;
 using Windows.Devices.Gpio;
 
 namespace DhtReadService
@@ -15,22 +17,33 @@ namespace DhtReadService
 
         public SensorReader(int pinNumber)
         {
+            if (LightningProvider.IsLightningEnabled)
+            {
+                // Set Lightning as the default provider
+                LowLevelDevicesController.DefaultProvider = LightningProvider.GetAggregateProvider();
+                //GpioStatus.Text = "GPIO Using Lightning Provider";
+            }
+            else
+            {
+                //GpioStatus.Text = "GPIO Using Default Provider";
+            }
             GpioController controller = GpioController.GetDefault();
             if (controller == null)
             {
                 statusText = "GPIO is not available on this system";
             }
-
-            GpioPin pin;
-            try
-            {
-                pin = controller.OpenPin(pinNumber);
-                dht11.Init(pin);
-                statusText = "Status: Initialized Successfully";
-            }
-            catch (Exception ex)
-            {
-                statusText = "Failed to open GPIO pin: " + ex.Message;
+            else {
+                GpioPin pin;
+                try
+                {
+                    pin = controller.OpenPin(pinNumber);
+                    dht11.Init(pin);
+                    statusText = "Status: Initialized Successfully";
+                }
+                catch (Exception ex)
+                {
+                    statusText = "Failed to open GPIO pin: " + ex.Message;
+                }
             }
         }
 

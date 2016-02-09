@@ -10,7 +10,7 @@ namespace DhtReadService
 {
     public sealed class Dht11
     {
-        const int sampleHoldLowMillis = 18;
+        const int sampleHoldLowMillis = 10;
         // This is the threshold used to determine whether a bit is a '0' or a '1'.
         // A '0' has a pulse time of 76 microseconds, while a '1' has a
         // pulse time of 120 microseconds. 110 is chosen as a reasonable threshold.
@@ -55,22 +55,19 @@ namespace DhtReadService
         {
             BitVector bits = new BitVector(40);
 
+            pin.SetDriveMode(GpioPinDriveMode.Output);
             // Latch low value onto pin
             pin.Write(GpioPinValue.Low);
 
-            // Set pin as output
-            pin.SetDriveMode(GpioPinDriveMode.Output);
-
             // Wait for at least 18 ms
             Task.Delay(sampleHoldLowMillis).Wait();
-
+            pin.Write(GpioPinValue.High);
+            Task.Delay(TimeSpan.FromTicks(200)).Wait();
+            var stopwatch = Stopwatch.StartNew();
             // Set pin back to input
             pin.SetDriveMode(inputDriveMode);
-
             GpioPinValue previousValue = pin.Read();
-
             // catch the first rising edge
-            var stopwatch = Stopwatch.StartNew();
             for (;;)
             {
                 if (stopwatch.ElapsedMilliseconds > initialRisingEdgeTimeoutMillis)

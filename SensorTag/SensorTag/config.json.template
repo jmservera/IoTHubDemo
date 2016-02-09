@@ -1,0 +1,5 @@
+﻿ {
+  "IotHubUri": "[hubname].azure-devices.net",
+  "DeviceName": "[registeredname]",
+  "DeviceKey": "[registeredkey]"
+ }

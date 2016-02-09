@@ -1,5 +1,4 @@
-﻿using Microsoft.IoT.Lightning.Providers;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,21 +11,11 @@ namespace DhtReadService
 {
     public sealed class SensorReader
     {
-        string statusText=string.Empty;
-        Dht11 dht11=new Dht11();
+        string statusText = string.Empty;
+        Dht11 dht11 = new Dht11();
 
         public SensorReader(int pinNumber)
         {
-            if (LightningProvider.IsLightningEnabled)
-            {
-                // Set Lightning as the default provider
-                LowLevelDevicesController.DefaultProvider = LightningProvider.GetAggregateProvider();
-                //GpioStatus.Text = "GPIO Using Lightning Provider";
-            }
-            else
-            {
-                //GpioStatus.Text = "GPIO Using Default Provider";
-            }
             GpioController controller = GpioController.GetDefault();
             if (controller == null)
             {
@@ -54,17 +43,18 @@ namespace DhtReadService
 
         public Dht11Reading Read()
         {
-            Dht11Reading reading=null;
+            Dht11Reading reading = null;
             int retryCount = 0;
             bool failed;
             do
             {
                 failed = false;
-                try {
+                try
+                {
                     reading = dht11.Sample();
                     reading.Failures = retryCount;
                 }
-                catch(TimeoutException tex)
+                catch (TimeoutException tex)
                 {
                     statusText = $"Timed out waiting for sample. {tex.Message}";
                     failed = true;

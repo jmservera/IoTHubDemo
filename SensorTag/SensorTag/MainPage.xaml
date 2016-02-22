@@ -18,7 +18,7 @@
         <Grid DataContext="{Binding SensorValues}">
             <Grid.RowDefinitions>
                 <RowDefinition/>
-                <RowDefinition Height="25"/>
+                <RowDefinition/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -26,6 +26,13 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
+            <Grid.Resources>
+                <ResourceDictionary>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="FontSize" Value="20"/>
+                    </Style>
+                </ResourceDictionary>
+            </Grid.Resources>
             <gauge:Gauge Grid.Column="0" Value="{Binding IrObject}" Maximum="100" Minimum="-20"/>
             <gauge:Gauge Grid.Column="1" Value="{Binding IrWorld}" Maximum="100" Minimum="-20"/>
             <gauge:Gauge Grid.Column="2" Value="{Binding Temperature}" Maximum="100" Minimum="-20"/>

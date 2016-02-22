@@ -57,11 +57,18 @@ namespace SensorTag
             var tag = new SensorTag();
             while (!tag.Connected)
             {
-               await tag.Init();
-                if (!tag.Connected)
+                try {
+                    await tag.Init();
+                    if (!tag.Connected)
+                    {
+                        log("Tag not connected, retrying");
+                        await Task.Delay(1000);
+                    }
+                }
+                catch(Exception ex)
                 {
-                    log("Tag not connected, retrying");
-                    await Task.Delay(1000);
+                    log($"Tag failed, retrying.{ex.Message}");
+                    await Task.Delay(2000);
                 }
             }
             tag.HumidityReceived += Tag_HumidityReceived;

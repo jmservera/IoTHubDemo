@@ -1,27 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
 using Windows.Devices.Bluetooth.GenericAttributeProfile;
 using Windows.Devices.Enumeration;
-using Windows.Foundation;
 using Windows.Storage.Streams;
 
 namespace SensorTag
 {
     //https://github.com/sandeepmistry/node-sensortag/blob/master/lib/cc2650.js
     //http://processors.wiki.ti.com/index.php/CC2650_SensorTag_User's_Guide
-
-    public class DoubleEventArgs : EventArgs
-    {
-        public double Value { get; private set; }
-        public DoubleEventArgs(double value)
-        {
-            Value = value;
-        }
-    }
     public class SensorTag
     {        
         const string TMP007_UUID = "F000AA00-0451-4000-B000-000000000000";
@@ -49,7 +37,7 @@ namespace SensorTag
         const string LUXOMETER_PERIOD_UUID = "f000aa7304514000b000000000000000";
 
         List<GattDeviceService> serviceList = new List<GattDeviceService>();
-        Dictionary<string, SensorTagSensor> sensors = new Dictionary<string, SensorTagSensor>();
+        Dictionary<string, SensorTagBleSensor> sensors = new Dictionary<string, SensorTagBleSensor>();
 
         public event EventHandler<DoubleEventArgs> HumidityReceived;
         public event EventHandler<DoubleEventArgs> TemperatureReceived;
@@ -60,12 +48,6 @@ namespace SensorTag
 
         public async Task Init()
         {
-            //var uuid = new Guid(TMP007_UUID);
-            //var sensor=await getSensor(uuid);
-            //sensors.Add(TMP007_UUID, sensor);
-            //await sensor.EnableNotifications();
-            //sensor.DataReceived += Characteristic_ValueChanged;
-
             var uuid = new Guid(HDC1000_UUID);
             var humSensor = await getSensor(uuid);
             var irSensor = await getSensor(new Guid(TMP007_UUID));
@@ -143,14 +125,14 @@ namespace SensorTag
             return bArray;
         }
 
-        private async Task<SensorTagSensor> getSensor(Guid uuid)
+        private async Task<SensorTagBleSensor> getSensor(Guid uuid)
         {
             var serv = await getService(uuid);
             if (serv != null)
             {
                 Connected = true;
 
-                var sensor = new SensorTagSensor(uuid, serv);
+                var sensor = new SensorTagBleSensor(uuid, serv);
                 serviceList.Add(serv);
                 var chars = serv.GetAllCharacteristics();
                 foreach (var characteristic in chars)
@@ -219,11 +201,6 @@ namespace SensorTag
             t2 = (float)it;
             t2=t2 * SCALE_LSB;
             System.Diagnostics.Debug.WriteLine($"Chip: {t2} IR: {t}");
-            //await Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-            //{
-            //    AmbTempOut.Text = string.Format("Chip:\t{0:0.0####}", AmbTemp);
-            //    ObjTempOut.Text = string.Format("IR:  \t{0:0.0####}", tObj);
-            //});
         }
 
         private static async Task<GattDeviceService> getService(Guid uuid)
@@ -244,47 +221,5 @@ namespace SensorTag
 
             return null;
         }
-    }
-
-    public class SensorTagSensor
-    {
-        public GattCharacteristic Data { get; set; }
-        public GattCharacteristic Configuration { get; set; }
-        public GattCharacteristic Period { get; set; }
-        public Guid Id { get; private set; }
-
-        public GattDeviceService Service { get; private set; }
-        public async Task EnableNotifications()
-        {
-            await Data.WriteClientCharacteristicConfigurationDescriptorAsync(GattClientCharacteristicConfigurationDescriptorValue.Notify);
-            Data.ValueChanged += getData;
-
-            using (var writer = new DataWriter())
-            {
-                // Special value for Gyroscope to enable all 3 axes
-                //if (sensor == GYROSCOPE)
-                //    writer.WriteByte((Byte)0x07);
-                //else
-                writer.WriteByte((Byte)0x01);
-                await Configuration.WriteValueAsync(writer.DetachBuffer());
-            }
-        }
-
-        private void getData(GattCharacteristic sender, GattValueChangedEventArgs args)
-        {
-            if (DataReceived != null)
-            {
-                DataReceived(sender, args);
-            }
-        }
-
-        public event Action<GattCharacteristic, GattValueChangedEventArgs> DataReceived;
-
-        public SensorTagSensor(Guid id, GattDeviceService service)
-        {
-            Id = id;
-            Service = service;
-        }
-
     }
 }

@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -41,6 +42,7 @@ namespace SensorTag
         const string HUMIDUNITS = "%";
 
         DeviceClient deviceClient;
+        Timer valuesSender;
 
         public SensorValues SensorValues { get; } = new SensorValues();
 
@@ -54,6 +56,7 @@ namespace SensorTag
 
         async void init()
         {
+            valuesSender = new Timer(sendValues, null, 1000, 1000);
             var tag = new SensorTag();
             while (!tag.Connected)
             {
@@ -77,54 +80,85 @@ namespace SensorTag
             tag.IrTemperatureReceived += Tag_IrTemperatureReceived;
         }
 
-        private async void Tag_IrTemperatureReceived(object sender, DoubleEventArgs e)
+        
+
+        private void Tag_IrTemperatureReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.IrObject = e.Value;
-            await sendValue(e, GUIDir, ORGANIZATION, DISPLAYNAME + "Ir", LOCATION, TEMPMEASURE, TEMPUNITS);
+            sendValue(e, GUIDir, ORGANIZATION, DISPLAYNAME + "Ir", LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
-        private async void Tag_IrAmbTemperatureReceived(object sender, DoubleEventArgs e)
+        private void Tag_IrAmbTemperatureReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.IrWorld = e.Value;
-            await sendValue(e, GUIDAMB, ORGANIZATION, DISPLAYNAME + "Amb Ir", LOCATION, TEMPMEASURE, TEMPUNITS);
+            sendValue(e, GUIDAMB, ORGANIZATION, DISPLAYNAME + "Amb Ir", LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
-        private async void Tag_TemperatureReceived(object sender, DoubleEventArgs e)
+        private void Tag_TemperatureReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.Temperature = e.Value;
-            await sendValue(e, GUID, ORGANIZATION, DISPLAYNAME, LOCATION, TEMPMEASURE, TEMPUNITS);
+            sendValue(e, GUID, ORGANIZATION, DISPLAYNAME, LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
-        private async void Tag_HumidityReceived(object sender, DoubleEventArgs e)
+        private void Tag_HumidityReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.Humidity = e.Value;
-            await sendValue(e, GUID,ORGANIZATION, DISPLAYNAME, LOCATION,HUMIDMEASURE,HUMIDUNITS);
+            sendValue(e, GUID,ORGANIZATION, DISPLAYNAME, LOCATION,HUMIDMEASURE,HUMIDUNITS);
         }
 
-        private async Task sendValue(DoubleEventArgs e, string guid, string org, string display, string location, string measure, string units)
+        List<SensorInfo> sensorInfoList = new List<SensorInfo>();
+
+        private void sendValue(DoubleEventArgs e, string guid, string org, string display, string location, string measure, string units)
         {
             try
             {
                 log($"{display} {measure}:{e.Value} Time:{DateTime.Now}");
-
-                var info = new SensorInfo
+                lock (sensorInfoList)
                 {
-                    Guid = guid,
-                    Organization = org,
-                    DisplayName = display,
-                    Location = location,
-                    MeasureName = measure,
-                    UnitOfMeasure = units,
-                    Value = e.Value,
-                    TimeCreated = DateTime.UtcNow
-                };
-                string dataBuffer = JsonConvert.SerializeObject(info);
-                var eventMessage = new Message(Encoding.UTF8.GetBytes(dataBuffer));
-                await deviceClient.SendEventAsync(eventMessage);
+                    sensorInfoList.Add(new SensorInfo
+                    {
+                        Guid = guid,
+                        Organization = org,
+                        DisplayName = display,
+                        Location = location,
+                        MeasureName = measure,
+                        UnitOfMeasure = units,
+                        Value = e.Value,
+                        TimeCreated = DateTime.UtcNow
+                    });
+                }
             }
             catch (Exception ex)
             {
                 log(ex.Message);
+            }
+        }
+
+        private async void sendValues(object state)
+        {
+            Message message = null;
+            int count = 0;
+            lock (sensorInfoList)
+            {
+                if (sensorInfoList.Count > 0)
+                {
+                    count = sensorInfoList.Count;
+                    var data = JsonConvert.SerializeObject(sensorInfoList);
+                    message = new Message(Encoding.UTF8.GetBytes(data));
+                    sensorInfoList.Clear();
+                }
+            }
+            try
+            {
+                if (message != null)
+                {
+                    await deviceClient.SendEventAsync(message);
+                    log($"Sent {count} values as a single message");
+                }
+            }
+            catch (Exception ex)
+            {
+                log($"Exception: {ex.Message}");
             }
         }
 

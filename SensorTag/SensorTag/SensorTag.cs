@@ -104,7 +104,7 @@ namespace SensorTag
             var t2 = ((double)it) * SCALE_LSB;
             if (IrAmbTemperatureReceived != null)
             {
-                IrAmbTemperatureReceived(this, new DoubleEventArgs(t));
+                IrAmbTemperatureReceived(this, new DoubleEventArgs(t2));
             }
         }
 

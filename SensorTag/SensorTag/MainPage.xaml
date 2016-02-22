@@ -5,10 +5,37 @@
     xmlns:local="using:SensorTag"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:gauge="using:WinRTXamlToolkit.Controls"
+    DataContext="{Binding RelativeSource={RelativeSource self}}"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <TextBlock Name="logger">
+
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*" />
+            <RowDefinition Height="2*"/>
+        </Grid.RowDefinitions>
+        <Grid DataContext="{Binding SensorValues}">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition Height="25"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <gauge:Gauge Grid.Column="0" Value="{Binding IrObject}" Maximum="100" Minimum="-20"/>
+            <gauge:Gauge Grid.Column="1" Value="{Binding IrWorld}" Maximum="100" Minimum="-20"/>
+            <gauge:Gauge Grid.Column="2" Value="{Binding Temperature}" Maximum="100" Minimum="-20"/>
+            <gauge:Gauge Grid.Column="3" Value="{Binding Humidity}" Maximum="100" Minimum="0"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Text="IR Object"/>
+            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Text="IR World"/>
+            <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Text="Temperature"/>
+            <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Text="Humidity"/>
+        </Grid>
+        <TextBlock Name="logger" Grid.Row="1">
             
         </TextBlock>
     </Grid>

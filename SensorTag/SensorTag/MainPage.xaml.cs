@@ -42,6 +42,8 @@ namespace SensorTag
 
         DeviceClient deviceClient;
 
+        public SensorValues SensorValues { get; } = new SensorValues();
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -70,22 +72,26 @@ namespace SensorTag
 
         private async void Tag_IrTemperatureReceived(object sender, DoubleEventArgs e)
         {
+            SensorValues.IrObject = e.Value;
             await sendValue(e, GUIDir, ORGANIZATION, DISPLAYNAME + "Ir", LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
         private async void Tag_IrAmbTemperatureReceived(object sender, DoubleEventArgs e)
         {
+            SensorValues.IrWorld = e.Value;
             await sendValue(e, GUIDAMB, ORGANIZATION, DISPLAYNAME + "Amb Ir", LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
         private async void Tag_TemperatureReceived(object sender, DoubleEventArgs e)
         {
+            SensorValues.Temperature = e.Value;
             await sendValue(e, GUID, ORGANIZATION, DISPLAYNAME, LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
         private async void Tag_HumidityReceived(object sender, DoubleEventArgs e)
         {
-            await sendValue(e, GUID,ORGANIZATION,DISPLAYNAME,LOCATION,HUMIDMEASURE,HUMIDUNITS);
+            SensorValues.Humidity = e.Value;
+            await sendValue(e, GUID,ORGANIZATION, DISPLAYNAME, LOCATION,HUMIDMEASURE,HUMIDUNITS);
         }
 
         private async Task sendValue(DoubleEventArgs e, string guid, string org, string display, string location, string measure, string units)

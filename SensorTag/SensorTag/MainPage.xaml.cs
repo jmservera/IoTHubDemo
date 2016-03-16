@@ -52,6 +52,26 @@ namespace SensorTag
             var key = AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(Config.Default.DeviceName, Config.Default.DeviceKey);
             deviceClient = DeviceClient.Create(Config.Default.IotHubUri, key, TransportType.Http1);
             init();
+            CancellationTokenSource t = new CancellationTokenSource();
+            startMessageReceiver(t.Token);
+        }
+
+        private async void startMessageReceiver(CancellationToken token)
+        {
+            while (!token.IsCancellationRequested)
+            {
+                var message = await deviceClient.ReceiveAsync();
+                if (message != null)
+                {
+                    var jsonMessage = Encoding.UTF8.GetString(message.GetBytes());
+                    log($"Message received: {jsonMessage}");
+                    //if (jsonMessage != null)
+                    //{
+                    //    nextStep(Steps.Lights);
+                    //}
+                    await deviceClient.CompleteAsync(message);
+                }
+            }
         }
 
         async void init()

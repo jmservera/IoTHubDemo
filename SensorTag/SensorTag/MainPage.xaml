@@ -25,6 +25,7 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
+                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.Resources>
                 <ResourceDictionary>
@@ -37,10 +38,12 @@
             <gauge:Gauge Grid.Column="1" Value="{Binding IrWorld}" Maximum="100" Minimum="-20"/>
             <gauge:Gauge Grid.Column="2" Value="{Binding Temperature}" Maximum="100" Minimum="-20"/>
             <gauge:Gauge Grid.Column="3" Value="{Binding Humidity}" Maximum="100" Minimum="0"/>
+            <gauge:Gauge Grid.Column="4" Value="{Binding Lux}" Maximum="100000" Minimum="0"/>
             <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Text="IR Object"/>
             <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Text="IR World"/>
             <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Text="Temperature"/>
             <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Text="Humidity"/>
+            <TextBlock Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Text="Lux"/>
         </Grid>
         <TextBlock Name="logger" Grid.Row="1">
             

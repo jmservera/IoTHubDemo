@@ -15,6 +15,15 @@ namespace SensorTag
             dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         }
 
+        private double lux;
+
+        public double Lux
+        {
+            get { return lux; }
+            set { Set(ref lux, value);}
+        }
+
+
         private double irWorld;
 
         public double IrWorld

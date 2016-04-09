@@ -1,4 +1,5 @@
-﻿using System;
+﻿using static Common.Logger;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Devices.Bluetooth;
@@ -43,57 +44,95 @@ namespace SensorTag
         public event EventHandler<DoubleEventArgs> TemperatureReceived;
         public event EventHandler<DoubleEventArgs> IrTemperatureReceived;
         public event EventHandler<DoubleEventArgs> IrAmbTemperatureReceived;
+        public event EventHandler<DoubleEventArgs> LuxReceived;
 
-        public bool Connected { get; set; }
+        public bool Connected { get { return sensors.Count == 3; }  }
 
         public async Task Init()
         {
-            var uuid = new Guid(HDC1000_UUID);
-            var humSensor = await getSensor(uuid);
-            var irSensor = await getSensor(new Guid(TMP007_UUID));
-
-            if (humSensor != null && irSensor!=null)
+            if (!sensors.ContainsKey(HDC1000_UUID))
             {
-                sensors.Add(HDC1000_UUID, humSensor);
-                await humSensor.EnableNotifications();
-                humSensor.DataReceived += HumSensor_DataReceived;
-
-                sensors.Add(TMP007_UUID, irSensor);
-                await irSensor.EnableNotifications();
-                irSensor.DataReceived += IrSensor_DataReceived;
+                var humSensor = await getSensor(new Guid(HDC1000_UUID));
+                if (humSensor != null)
+                {
+                    sensors.Add(HDC1000_UUID, humSensor);
+                    await humSensor.EnableNotifications();
+                    humSensor.DataReceived += HumSensor_DataReceived;
+                    LogInfo("HDC Sensor connected.");
+                }
+                else
+                {
+                    LogError("HDC Sensor didn't connect, must retry.");
+                }
             }
+
+            if (!sensors.ContainsKey(TMP007_UUID))
+            {
+                var irSensor = await getSensor(new Guid(TMP007_UUID));
+                if (irSensor != null)
+                {
+                    sensors.Add(TMP007_UUID, irSensor);
+                    await irSensor.EnableNotifications();
+                    irSensor.DataReceived += IrSensor_DataReceived;
+                    LogInfo("IR Sensor connected.");
+                }
+                else
+                {
+                    LogError("Temp IR Sensor didn't connect, must retry.");
+                }
+            }
+
+            if (!sensors.ContainsKey(LUXOMETER_UUID))
+            {
+                var luxSensor = await getSensor(new Guid(LUXOMETER_UUID));
+                if (luxSensor != null)
+                {
+                    sensors.Add(LUXOMETER_UUID, luxSensor);
+                    await luxSensor.EnableNotifications();
+                    luxSensor.DataReceived += LuxSensor_DataReceived;
+                    LogInfo("Lux Sensor connected.");
+                }
+                else
+                {
+                    LogError("Lux Sensor didn't connect, must retry.");
+                }
+            }
+        }
+
+        private void LuxSensor_DataReceived(GattCharacteristic sender, GattValueChangedEventArgs args)
+        {
+            byte[] bArray = getDataValue(args);
+            ushort rawValue= (ushort)((bArray[1] << 8) + bArray[0]);
+            ushort m = (ushort)(rawValue & 0x0FFF);
+            ushort e = (ushort)((rawValue & 0xF000) >> 12);
+
+            var value= m * (0.01 * Math.Pow(2.0, e));
+            LuxReceived?.Invoke(this, new DoubleEventArgs(value));
         }
 
         private void IrSensor_DataReceived(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
             byte[] bArray = getDataValue(args);
-            UInt16 rawObjTemp = (UInt16)(((UInt16)bArray[1] << 8) + (UInt16)bArray[0]);
-            UInt16 rawAmbTemp = (UInt16)(((UInt16)bArray[3] << 8) + (UInt16)bArray[2]);
+            ushort rawObjTemp = (ushort)((bArray[1] << 8) + bArray[0]);
+            ushort rawAmbTemp = (ushort)((bArray[3] << 8) + bArray[2]);
 
 
             const float SCALE_LSB = 0.03125f;
             int it;
 
-            it = (int)((rawObjTemp) >> 2);
+            it = (rawObjTemp) >> 2;
             var t = ((double)(it)) * SCALE_LSB;
-            if(IrTemperatureReceived!= null)
-            {
-                IrTemperatureReceived(this, new DoubleEventArgs(t));
-            }
+            IrTemperatureReceived?.Invoke(this, new DoubleEventArgs(t));
 
-            
-            it = (int)((rawAmbTemp) >> 2);
+            it = (rawAmbTemp) >> 2;
             var t2 = ((double)it) * SCALE_LSB;
-            if (IrAmbTemperatureReceived != null)
-            {
-                IrAmbTemperatureReceived(this, new DoubleEventArgs(t2));
-            }
+            IrAmbTemperatureReceived?.Invoke(this, new DoubleEventArgs(t2));
         }
 
         private void HumSensor_DataReceived(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
             byte[] bArray = getDataValue(args);
-            UInt16 rawHum = (UInt16)(((UInt16)bArray[3] << 8) + (UInt16)bArray[2]);
+            UInt16 rawHum = (ushort)(((UInt16)bArray[3] << 8) + (UInt16)bArray[2]);
 
             Int16 rawTemp = (Int16)(((UInt16)bArray[1] << 8) + (UInt16)bArray[0]);
 
@@ -105,14 +144,8 @@ namespace SensorTag
 
             System.Diagnostics.Debug.WriteLine($"temp: {temp} hum: {hum}");
 
-            if (TemperatureReceived != null)
-            {
-                TemperatureReceived(this, new DoubleEventArgs(temp));
-            }
-            if (HumidityReceived != null)
-            {
-                HumidityReceived(this, new DoubleEventArgs(hum));
-            }
+            TemperatureReceived?.Invoke(this, new DoubleEventArgs(temp));
+            HumidityReceived?.Invoke(this, new DoubleEventArgs(hum));
         }
 
         private static byte[] getDataValue(GattValueChangedEventArgs args)
@@ -130,8 +163,6 @@ namespace SensorTag
             var serv = await getService(uuid);
             if (serv != null)
             {
-                Connected = true;
-
                 var sensor = new SensorTagBleSensor(uuid, serv);
                 serviceList.Add(serv);
                 var chars = serv.GetAllCharacteristics();

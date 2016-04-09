@@ -32,17 +32,21 @@ namespace SensorTag
         const string GUID = "ECD59A6D-1D0E-4CE2-A839-31167815A22D"; //todo create a unique guid per device
         const string GUIDir = "ECD59A6D-1D0E-4CE2-A839-31167815A22E"; //todo create a unique guid per device
         const string GUIDAMB = "ECD59A6D-1D0E-4CE2-A839-31167815A2F"; //todo create a unique guid per device
+        const string GUIDLux = "ECD59A6D-1D0E-4CE2-A839-31167815A30"; //todo create a unique guid per device
 
         const string ORGANIZATION = "Microsoft";
         const string DISPLAYNAME = "SensorTag 2650";
         const string LOCATION = "Madrid"; //todo config the location
         const string TEMPMEASURE = "Temperature";
         const string HUMIDMEASURE = "Humidity";
+        const string LUXMEASURE = "Lux";
         const string TEMPUNITS = "C";
         const string HUMIDUNITS = "%";
+        const string LUXUNITS = "%";
 
         DeviceClient deviceClient;
         Timer valuesSender;
+        SemaphoreSlim semaphore = new SemaphoreSlim(1);
 
         public SensorValues SensorValues { get; } = new SensorValues();
 
@@ -54,6 +58,7 @@ namespace SensorTag
             init();
             CancellationTokenSource t = new CancellationTokenSource();
             startMessageReceiver(t.Token);
+            Logger.LogReceived += log;
         }
 
         private async void startMessageReceiver(CancellationToken token)
@@ -64,7 +69,7 @@ namespace SensorTag
                 if (message != null)
                 {
                     var jsonMessage = Encoding.UTF8.GetString(message.GetBytes());
-                    log($"Message received: {jsonMessage}");
+                    Logger.LogInfo($"Message received: {jsonMessage}");
                     //if (jsonMessage != null)
                     //{
                     //    nextStep(Steps.Lights);
@@ -84,23 +89,29 @@ namespace SensorTag
                     await tag.Init();
                     if (!tag.Connected)
                     {
-                        log("Tag not connected, retrying");
+                        Logger.LogError("Tag not connected, retrying");
                         await Task.Delay(1000);
                     }
                 }
                 catch(Exception ex)
                 {
-                    log($"Tag failed, retrying.{ex.Message}");
+                    Logger.LogException(ex);
                     await Task.Delay(2000);
                 }
             }
+
             tag.HumidityReceived += Tag_HumidityReceived;
             tag.TemperatureReceived += Tag_TemperatureReceived;
             tag.IrAmbTemperatureReceived += Tag_IrAmbTemperatureReceived;
             tag.IrTemperatureReceived += Tag_IrTemperatureReceived;
+            tag.LuxReceived += Tag_LuxReceived;
         }
 
-        
+        private void Tag_LuxReceived(object sender, DoubleEventArgs e)
+        {
+            SensorValues.Lux = e.Value;
+            sendValue(e, GUIDLux, ORGANIZATION, DISPLAYNAME + "Lux", LOCATION, LUXMEASURE, LUXUNITS);
+        }
 
         private void Tag_IrTemperatureReceived(object sender, DoubleEventArgs e)
         {
@@ -117,13 +128,13 @@ namespace SensorTag
         private void Tag_TemperatureReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.Temperature = e.Value;
-            sendValue(e, GUID, ORGANIZATION, DISPLAYNAME, LOCATION, TEMPMEASURE, TEMPUNITS);
+            sendValue(e, GUID, ORGANIZATION, DISPLAYNAME + "Temp", LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
         private void Tag_HumidityReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.Humidity = e.Value;
-            sendValue(e, GUID,ORGANIZATION, DISPLAYNAME, LOCATION,HUMIDMEASURE,HUMIDUNITS);
+            sendValue(e, GUID,ORGANIZATION, DISPLAYNAME + "Humidity", LOCATION,HUMIDMEASURE,HUMIDUNITS);
         }
 
         List<SensorInfo> sensorInfoList = new List<SensorInfo>();
@@ -132,8 +143,10 @@ namespace SensorTag
         {
             try
             {
-                log($"{display} {measure}:{e.Value} Time:{DateTime.Now}");
-                lock (sensorInfoList)
+                Logger.LogInfo($"{display} {measure}:{e.Value} Time:{DateTime.Now}");
+
+                Monitor.Enter(sensorInfoList);
+                try
                 {
                     sensorInfoList.Add(new SensorInfo
                     {
@@ -147,52 +160,66 @@ namespace SensorTag
                         TimeCreated = DateTime.UtcNow
                     });
                 }
+                finally
+                {
+                    Monitor.Exit(sensorInfoList);
+                }
             }
             catch (Exception ex)
             {
-                log(ex.Message);
+                Logger.LogException(ex);
             }
         }
+
 
         private async void sendValues(object state)
         {
             Message message = null;
             int count = 0;
-            lock (sensorInfoList)
+            if (Monitor.TryEnter(sensorInfoList))
             {
-                if (sensorInfoList.Count > 0)
+                try
                 {
-                    count = sensorInfoList.Count;
-                    var data = JsonConvert.SerializeObject(sensorInfoList);
-                    message = new Message(Encoding.UTF8.GetBytes(data));
-                    sensorInfoList.Clear();
+                    if (sensorInfoList.Count > 0)
+                    {
+                        count = sensorInfoList.Count;
+                        var data = JsonConvert.SerializeObject(sensorInfoList);
+                        message = new Message(Encoding.UTF8.GetBytes(data));
+                        sensorInfoList.Clear();
+                    }
                 }
-            }
-            try
-            {
-                if (message != null)
+                finally
                 {
-                    await deviceClient.SendEventAsync(message);
-                    log($"Sent {count} values as a single message");
+                    Monitor.Exit(sensorInfoList);
                 }
-            }
-            catch (Exception ex)
-            {
-                log($"Exception: {ex.Message}");
+                try
+                {
+                    if (message != null)
+                    {
+                        await deviceClient.SendEventAsync(message);
+                        Logger.LogInfo($"Sent {count} values as a single message");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Logger.LogException(ex);
+                }
             }
         }
 
-        private async void log(string message)
+        private async void log(object sender, LoggerEventArgs eventArgs)
         {
-            Logger.Log(message);
-            await logger.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+            if (eventArgs.Level != LogLevel.Info)
             {
-                logger.Text = message + Environment.NewLine + logger.Text;
-                if (logger.Text.Length > 1000)
+                await logger.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    logger.Text.Substring(0, 800);
-                }
-            });
+                    logger.Text = eventArgs.Message + Environment.NewLine + logger.Text;
+                    if (logger.Text.Length > 1000)
+                    {
+                        logger.Text.Substring(0, 800);
+                    }
+                });
+            }
         }
     }
 }

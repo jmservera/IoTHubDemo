@@ -11,6 +11,7 @@ namespace Common
     {
         Error,
         Warning,
+        Event,
         Info
     }
     public sealed class LoggerEventArgs : EventArgs

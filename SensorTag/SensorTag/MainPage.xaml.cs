@@ -69,7 +69,7 @@ namespace SensorTag
                 if (message != null)
                 {
                     var jsonMessage = Encoding.UTF8.GetString(message.GetBytes());
-                    Logger.LogInfo($"Message received: {jsonMessage}");
+                    Logger.Log($"Message received: {jsonMessage}", LogLevel.Event);
                     //if (jsonMessage != null)
                     //{
                     //    nextStep(Steps.Lights);

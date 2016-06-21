@@ -3,6 +3,14 @@
   "version": 1,
   "targets": {
     "UAP,Version=v10.0": {
+      "AMQPNetLite/1.1.8": {
+        "compile": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        }
+      },
       "CommonServiceLocator/1.3.0": {
         "compile": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
@@ -1868,6 +1876,14 @@
       }
     },
     "UAP,Version=v10.0/win10-arm": {
+      "AMQPNetLite/1.1.8": {
+        "compile": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        }
+      },
       "CommonServiceLocator/1.3.0": {
         "compile": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
@@ -3586,6 +3602,14 @@
       }
     },
     "UAP,Version=v10.0/win10-arm-aot": {
+      "AMQPNetLite/1.1.8": {
+        "compile": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        }
+      },
       "CommonServiceLocator/1.3.0": {
         "compile": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
@@ -5268,6 +5292,14 @@
       }
     },
     "UAP,Version=v10.0/win10-x64": {
+      "AMQPNetLite/1.1.8": {
+        "compile": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        }
+      },
       "CommonServiceLocator/1.3.0": {
         "compile": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
@@ -6992,6 +7024,14 @@
       }
     },
     "UAP,Version=v10.0/win10-x64-aot": {
+      "AMQPNetLite/1.1.8": {
+        "compile": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        }
+      },
       "CommonServiceLocator/1.3.0": {
         "compile": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
@@ -8674,6 +8714,14 @@
       }
     },
     "UAP,Version=v10.0/win10-x86": {
+      "AMQPNetLite/1.1.8": {
+        "compile": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        }
+      },
       "CommonServiceLocator/1.3.0": {
         "compile": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
@@ -10398,6 +10446,14 @@
       }
     },
     "UAP,Version=v10.0/win10-x86-aot": {
+      "AMQPNetLite/1.1.8": {
+        "compile": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        },
+        "runtime": {
+          "lib/netcore451/Amqp.NetCore.dll": {}
+        }
+      },
       "CommonServiceLocator/1.3.0": {
         "compile": {
           "lib/portable-net4+sl5+netcore45+wpa81+wp8/Microsoft.Practices.ServiceLocation.dll": {}
@@ -12081,6 +12137,60 @@
     }
   },
   "libraries": {
+    "AMQPNetLite/1.1.8": {
+      "sha512": "Kxw1M2uVBvG7bvs7rnZo0jxky0O8tiHnJkUhCwmlGPhJwS6LPTuGF6koPGvslaTHD2sfUgzxUj5OmghZneIGQQ==",
+      "type": "package",
+      "files": [
+        "AMQPNetLite.1.1.8.nupkg.sha512",
+        "AMQPNetLite.nuspec",
+        "lib/net-cf/Amqp.NetCF39.dll",
+        "lib/net-cf/Amqp.NetCF39.pdb",
+        "lib/net-cf/DeployFileList.txt",
+        "lib/net35/Amqp.Net35.dll",
+        "lib/net35/Amqp.Net35.pdb",
+        "lib/net40/Amqp.Net.dll",
+        "lib/net40/Amqp.Net.dll.config",
+        "lib/net40/Amqp.Net.pdb",
+        "lib/net45/Amqp.Net.XML",
+        "lib/net45/Amqp.Net.dll",
+        "lib/net45/Amqp.Net.pdb",
+        "lib/netcore451/Amqp.NetCore.dll",
+        "lib/netcore451/Amqp.NetCore.pdb",
+        "lib/netcore451/Amqp.NetCore.pri",
+        "lib/netmf42/Amqp.NetMF.dll",
+        "lib/netmf42/Amqp.NetMF.pdb",
+        "lib/netmf42/be/Amqp.NetMF.pdb",
+        "lib/netmf42/be/Amqp.NetMF.pdbx",
+        "lib/netmf42/be/Amqp.NetMF.pe",
+        "lib/netmf42/le/Amqp.NetMF.pdb",
+        "lib/netmf42/le/Amqp.NetMF.pdbx",
+        "lib/netmf42/le/Amqp.NetMF.pe",
+        "lib/netmf43/Amqp.NetMF.dll",
+        "lib/netmf43/Amqp.NetMF.pdb",
+        "lib/netmf43/be/Amqp.NetMF.pdb",
+        "lib/netmf43/be/Amqp.NetMF.pdbx",
+        "lib/netmf43/be/Amqp.NetMF.pe",
+        "lib/netmf43/le/Amqp.NetMF.pdb",
+        "lib/netmf43/le/Amqp.NetMF.pdbx",
+        "lib/netmf43/le/Amqp.NetMF.pe",
+        "lib/netmf44/Amqp.NetMF.dll",
+        "lib/netmf44/Amqp.NetMF.pdb",
+        "lib/netmf44/be/Amqp.NetMF.pdb",
+        "lib/netmf44/be/Amqp.NetMF.pdbx",
+        "lib/netmf44/be/Amqp.NetMF.pe",
+        "lib/netmf44/le/Amqp.NetMF.pdb",
+        "lib/netmf44/le/Amqp.NetMF.pdbx",
+        "lib/netmf44/le/Amqp.NetMF.pe",
+        "lib/windows8/Amqp.Store.dll",
+        "lib/windows8/Amqp.Store.pdb",
+        "lib/windows8/Amqp.Store.pri",
+        "lib/windowsphone8/Amqp.WP.dll",
+        "lib/windowsphone8/Amqp.WP.pdb",
+        "lib/wpa81/Amqp.NetCore.dll",
+        "lib/wpa81/Amqp.NetCore.pdb",
+        "lib/wpa81/Amqp.NetCore.pri"
+      ]
+    },
     "CommonServiceLocator/1.3.0": {
       "sha512": "fbjO0SNwbOFPdwVfyqv+B7gIJ2CVBOFPKqn1mDDECK7KER8jFaOdcvroFYoAHa0ktPbxi5s+15qOLnA96f8GSA==",
       "type": "Package",

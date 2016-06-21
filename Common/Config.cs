@@ -24,6 +24,12 @@ namespace Common
         public string DeviceName { get; set; }
         public string DeviceKey { get; set; }
 
+        public string EventHubNamespace { get; set; }
+        public string EventHubName { get; set; }
+        public string PolicyName { get; set; }
+        public string Key { get; set; }
+        public string Partitionkey { get; set; }
+
         static Config _config;
         public static Config Default
         {

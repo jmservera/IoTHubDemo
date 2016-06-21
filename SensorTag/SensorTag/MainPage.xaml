@@ -13,6 +13,7 @@
 
         <Grid.RowDefinitions>
             <RowDefinition Height="5*" />
+            <RowDefinition Height="50"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
         <Grid DataContext="{Binding SensorValues}">
@@ -45,7 +46,20 @@
             <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Text="Humidity"/>
             <TextBlock Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Text="Lux"/>
         </Grid>
-        <TextBlock Name="logger" Grid.Row="1">
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                    <Setter Property="Margin" Value="5"/>
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock>Sender:</TextBlock>
+            <ToggleSwitch IsOn="{Binding SendEnabled,Mode=TwoWay}"/>
+            <TextBlock>Mode:</TextBlock>
+            <ToggleSwitch IsOn="{Binding EventHubs, Mode=TwoWay}" OnContent="EventHubs" OffContent="IoT Hub"/>
+            <TextBlock >Writes: <Run Text="{Binding ValueWrites}"/> Sends: <Run Text="{Binding Sends}"/></TextBlock>
+        </StackPanel>
+        <TextBlock Name="logger" Grid.Row="2">
             
         </TextBlock>
     </Grid>

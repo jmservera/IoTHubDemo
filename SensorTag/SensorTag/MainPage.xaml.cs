@@ -296,8 +296,8 @@ namespace SensorTag
                 {
                     var message = new Message(Encoding.UTF8.GetBytes(data));
                     await deviceClient.SendEventAsync(message);
-                    Logger.LogInfo($"Sent {count} values as a single message");
                 }
+                Logger.LogInfo($"Sent {count} values as a single message");
                 incrementSends();
             }
         }

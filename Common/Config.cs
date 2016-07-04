@@ -24,6 +24,11 @@ namespace Common
         public string DeviceName { get; set; }
         public string DeviceKey { get; set; }
 
+        public string IotSuiteUri { get; set; }
+        public string IotSuiteDeviceName { get; set; }
+        public string IotSuiteDeviceKey { get; set; }
+
+
         public string EventHubNamespace { get; set; }
         public string EventHubName { get; set; }
         public string PolicyName { get; set; }

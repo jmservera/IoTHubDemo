@@ -52,11 +52,16 @@
                     <Setter Property="VerticalAlignment" Value="Center"/>
                     <Setter Property="Margin" Value="5"/>
                 </Style>
+                <Style TargetType="ComboBox">
+                    <Setter Property="VerticalAlignment" Value="Center"/>
+                </Style>
             </StackPanel.Resources>
-            <TextBlock>Sender:</TextBlock>
+            <TextBlock>Send to cloud:</TextBlock>
             <ToggleSwitch IsOn="{Binding SendEnabled,Mode=TwoWay}"/>
+            <TextBlock>Simulated:</TextBlock>
+            <ToggleSwitch IsOn="{Binding Simulated,Mode=TwoWay}" OnContent="Yes" OffContent="No"/>
             <TextBlock>Mode:</TextBlock>
-            <ToggleSwitch IsOn="{Binding EventHubs, Mode=TwoWay}" OnContent="EventHubs" OffContent="IoT Hub"/>
+            <ComboBox ItemsSource="{Binding Modes}" Width="110" SelectedItem="{Binding CurrentMode, Mode=TwoWay}"/>
             <TextBlock >Writes: <Run Text="{Binding ValueWrites}"/> Sends: <Run Text="{Binding Sends}"/></TextBlock>
         </StackPanel>
         <TextBlock Name="logger" Grid.Row="2">

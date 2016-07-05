@@ -425,9 +425,11 @@ namespace SensorTag
                             data = JsonConvert.SerializeObject(new
                             {
                                 DeviceID = Config.Default.IotSuiteDeviceName,
-                                Temperature = Math.Round(SensorValues.IrObject,2),
+                                ObjectTemperature = Math.Round(SensorValues.IrObject,2),
                                 Humidity = Math.Round(SensorValues.Humidity,2),
-                                ExternalTemperature = Math.Round(SensorValues.IrWorld,2)
+                                Temperature=Math.Round(SensorValues.Temperature,2),
+                                ExternalTemperature = Math.Round(SensorValues.IrWorld,2),
+                                Lux= SensorValues.Lux
                             });
                         }
                         else

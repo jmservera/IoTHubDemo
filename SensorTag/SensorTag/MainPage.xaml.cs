@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading;
@@ -300,15 +301,48 @@ namespace SensorTag
             while (!token.IsCancellationRequested)
             {
                 var message = await deviceClient.ReceiveAsync();
-                if (message != null) 
+                if (message != null)
                 {
                     var jsonMessage = Encoding.UTF8.GetString(message.GetBytes());
                     Logger.Log($"Message received: {jsonMessage}", LogLevel.Event);
+                    colorLight(jsonMessage);
                     await deviceClient.CompleteAsync(message);
                 }
             }
         }
 
+        private void colorLight(string jsonMessage)
+        {
+            try
+            {
+                var colorMethod = findGetColorMethod(jsonMessage);
+                if (colorMethod != null)
+                {
+                    var color = (Windows.UI.Color)colorMethod.Invoke(null, null);
+                    SolidColorBrush brush = new SolidColorBrush(color);
+                    Light.Fill = brush;
+                }
+            }
+            catch(Exception ex)
+            {
+                Logger.LogException(ex);
+            }
+        }
+
+        private static MethodBase findGetColorMethod(string colorName)
+        {
+            foreach (PropertyInfo propertyInfo in typeof(Windows.UI.Colors).GetTypeInfo().DeclaredProperties)
+            {
+                if (propertyInfo.Name.Equals(colorName, StringComparison.OrdinalIgnoreCase))
+                {
+                    MethodBase getMethod = propertyInfo.GetMethod;
+                    if (getMethod.IsPublic && getMethod.IsStatic)
+                        return getMethod;
+                    break;
+                }
+            }
+            return null;
+        }
         async void init()
         {
             valuesSender = new Timer(sendValues, null, 1000, 1000);

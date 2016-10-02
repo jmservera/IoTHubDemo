@@ -300,13 +300,19 @@ namespace SensorTag
         {
             while (!token.IsCancellationRequested)
             {
-                var message = await deviceClient.ReceiveAsync();
-                if (message != null)
+                try
                 {
-                    var jsonMessage = Encoding.UTF8.GetString(message.GetBytes());
-                    Logger.Log($"Message received: {jsonMessage}", LogLevel.Event);
-                    colorLight(jsonMessage);
-                    await deviceClient.CompleteAsync(message);
+                    var message = await deviceClient.ReceiveAsync();
+                    if (message != null)
+                    {
+                        var jsonMessage = Encoding.UTF8.GetString(message.GetBytes());
+                        Logger.Log($"Message received: {jsonMessage}", LogLevel.Event);
+                        colorLight(jsonMessage);
+                        await deviceClient.CompleteAsync(message);
+                    }
+                }catch(Exception ex)
+                {
+                    Logger.LogException(ex);
                 }
             }
         }

@@ -239,15 +239,18 @@ namespace SensorTag
             var devices = await DeviceInformation.FindAllAsync(GattDeviceService.GetDeviceSelectorFromUuid(uuid), null);
             if (devices != null && devices.Count > 0)
             {
-                if (devices[0].IsEnabled)
+                for (int i = 0; i < devices.Count; i++)
                 {
-                    GattDeviceService deviceService = await GattDeviceService.FromIdAsync(devices[0].Id);
-                    if (deviceService != null)
+                    if (devices[i].IsEnabled)
                     {
-                        await Task.Delay(500);
-                        if (deviceService.Device.ConnectionStatus == BluetoothConnectionStatus.Connected)
+                        GattDeviceService deviceService = await GattDeviceService.FromIdAsync(devices[i].Id);
+                        if (deviceService != null)
                         {
-                            return deviceService;
+                            await Task.Delay(500);
+                            if (deviceService.Device.ConnectionStatus == BluetoothConnectionStatus.Connected)
+                            {
+                                return deviceService;
+                            }
                         }
                     }
                 }

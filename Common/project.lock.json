@@ -12364,8 +12364,9 @@
   },
   "libraries": {
     "AMQPNetLite/1.1.8": {
-      "sha512": "Kxw1M2uVBvG7bvs7rnZo0jxky0O8tiHnJkUhCwmlGPhJwS6LPTuGF6koPGvslaTHD2sfUgzxUj5OmghZneIGQQ==",
+      "sha512": "NY5bpvO/XTfjnOGespMJuWidWoIZb9G7Vnm2g85jFVbmrrLXxlDBtK0grjgnaayT4GuUzBE45A3mnDStqBLi+w==",
       "type": "package",
+      "path": "AMQPNetLite/1.1.8",
       "files": [
         "AMQPNetLite.1.1.8.nupkg.sha512",
         "AMQPNetLite.nuspec",
@@ -15796,5 +15797,7 @@
       "Newtonsoft.Json >= 8.0.1"
     ],
     "UAP,Version=v10.0": []
-  }
+  },
+  "tools": {},
+  "projectFileToolGroups": {}
 }

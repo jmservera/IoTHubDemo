@@ -6,13 +6,14 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:gauge="using:WinRTXamlToolkit.Controls"
-    DataContext="{Binding RelativeSource={RelativeSource self}}"
+    DataContext="{Binding Main, Source={StaticResource Locator}}"
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="5*" />
+            <RowDefinition Height="2*"/>
             <RowDefinition Height="50"/>
             <RowDefinition Height="2*"/>
         </Grid.RowDefinitions>
@@ -20,7 +21,6 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="3*"/>
                 <RowDefinition Height="1*"/>
-                <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition/>
@@ -46,9 +46,19 @@
             <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Text="Temperature" />
             <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Text="Humidity" />
             <TextBlock Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Text="Lux" />
-            <Ellipse Name="Light" Grid.Row="2" Grid.Column="0" Stretch="Uniform" Margin="5" Fill="Yellow"/>
         </Grid>
-        <StackPanel Grid.Row="1" Orientation="Horizontal">
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Ellipse Name="Light" Stretch="Uniform"
+                     Margin="5" Fill="{Binding Light}"/>
+        </Grid>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
             <StackPanel.Resources>
                 <Style TargetType="TextBlock">
                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -66,8 +76,6 @@
             <ComboBox ItemsSource="{Binding Modes}" Width="110" SelectedItem="{Binding CurrentMode, Mode=TwoWay}"/>
             <TextBlock >Writes: <Run Text="{Binding ValueWrites}"/> Sends: <Run Text="{Binding Sends}"/></TextBlock>
         </StackPanel>
-        <TextBlock Name="logger" Grid.Row="2">
-
-        </TextBlock>
+        <TextBlock Name="logger" Grid.Row="3" Text="{Binding LogText}" />
     </Grid>
 </Page>

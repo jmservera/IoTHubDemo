@@ -1,6 +1,4 @@
 ﻿using Common;
-using GalaSoft.MvvmLight;
-using GalaSoft.MvvmLight.Threading;
 using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
 using System;
@@ -11,6 +9,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Template10.Mvvm;
 using Windows.Devices.Geolocation;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
@@ -61,7 +60,7 @@ namespace SensorTag.ViewModels
             set
             {
                 currentMode = value;
-                Set(nameof(currentMode), ref currentMode, value);
+                Set(ref currentMode, value);
                 connect();
             }
         }
@@ -256,11 +255,10 @@ namespace SensorTag.ViewModels
         int sends;
         int valueWrites;
         public int Sends { get { return sends; } }
-        async void incrementSends()
+        void incrementSends()
         {
             sends++;
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-            RaisePropertyChanged(nameof(Sends)));
+            RaisePropertyChanged(nameof(Sends));
         }
 
         private bool sendEnabled;
@@ -278,8 +276,7 @@ namespace SensorTag.ViewModels
         void incrementWrites()
         {
             valueWrites++;
-            DispatcherHelper.CheckBeginInvokeOnUI(() =>
-                RaisePropertyChanged(nameof(ValueWrites)));
+            RaisePropertyChanged(nameof(ValueWrites));
         }
 
         public MainViewModel()
@@ -572,17 +569,9 @@ namespace SensorTag.ViewModels
                 string txt = eventArgs.Message + Environment.NewLine + logText;
                 if (txt.Length > 1000)
                 {
-                    txt=txt.Substring(0, 800);
+                    txt = txt.Substring(0, 800);
                 }
-
-                if (DispatcherHelper.UIDispatcher != null)
-                {
-                    DispatcherHelper.CheckBeginInvokeOnUI(() => LogText = txt);
-                }
-                else
-                {
-                    LogText = txt;
-                }
+                LogText = txt;
             }
         }
 

@@ -13,6 +13,7 @@ using Template10.Mvvm;
 using Windows.Devices.Geolocation;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
 
 namespace SensorTag.ViewModels
 {
@@ -281,11 +282,7 @@ namespace SensorTag.ViewModels
 
         public MainViewModel()
         {
-            simulatedTimer = new Timer(simulateValues, this, Timeout.Infinite, 1000);
-            init();
-
             Logger.LogReceived += log;
-            connect();
         }
 
         private async void startMessageReceiver(DeviceClient deviceClient, CancellationToken token)
@@ -341,6 +338,18 @@ namespace SensorTag.ViewModels
                 }
             }
             return null;
+        }
+        bool initialized;
+        public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        {
+            if (!initialized)
+            {
+                initialized = true;
+                simulatedTimer = new Timer(simulateValues, this, Timeout.Infinite, 1000);
+                init();
+                connect();
+            }
+            return base.OnNavigatedToAsync(parameter, mode, state);
         }
         async void init()
         {

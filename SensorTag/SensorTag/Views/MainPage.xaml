@@ -10,81 +10,186 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:gauge="using:WinRTXamlToolkit.Controls"
-      xmlns:vm="using:SensorTag.ViewModels"
     mc:Ignorable="d">
     <Page.DataContext>
-        <vm:MainViewModel x:Name="ViewModel" />
+        <StaticResource ResourceKey="ViewModel"/>
     </Page.DataContext>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="5*" />
-            <RowDefinition Height="2*"/>
-            <RowDefinition Height="50"/>
-            <RowDefinition Height="2*"/>
-        </Grid.RowDefinitions>
-        <Grid DataContext="{Binding SensorValues}">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.Resources>
-                <ResourceDictionary>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="FontSize" Value="20"/>
-                    </Style>
-                    <Style TargetType="gauge:Gauge">
-                        <Setter Property="Margin" Value="5,5,5,30"/>
-                    </Style>
-                </ResourceDictionary>
-            </Grid.Resources>
-            <gauge:Gauge Grid.Column="0" Value="{Binding IrObject}" Maximum="100" Minimum="-20"  Grid.RowSpan="2"/>
-            <gauge:Gauge Grid.Column="1" Value="{Binding IrWorld}" Maximum="100" Minimum="-20"  Grid.RowSpan="2"/>
-            <gauge:Gauge Grid.Column="2" Value="{Binding Temperature}" Maximum="100" Minimum="-20"  Grid.RowSpan="2"/>
-            <gauge:Gauge Grid.Column="3" Value="{Binding Humidity}" Maximum="100" Minimum="0"  Grid.RowSpan="2"/>
-            <gauge:Gauge Grid.Column="4" Value="{Binding Lux}" Maximum="100000" Minimum="0"  Grid.RowSpan="2"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Text="IR Object" />
-            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Text="IR World" />
-            <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Text="Temperature" />
-            <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Text="Humidity" />
-            <TextBlock Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Text="Lux" />
-        </Grid>
-        <Grid Grid.Row="1">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Ellipse Name="Light" Stretch="Uniform"
-                     Margin="5" Fill="{Binding Light}"/>
-        </Grid>
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <StackPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                    <Setter Property="Margin" Value="5"/>
-                </Style>
-                <Style TargetType="ComboBox">
-                    <Setter Property="VerticalAlignment" Value="Center"/>
-                </Style>
-            </StackPanel.Resources>
-            <TextBlock>Send to cloud:</TextBlock>
-            <ToggleSwitch IsOn="{Binding SendEnabled,Mode=TwoWay}"/>
-            <TextBlock>Simulated:</TextBlock>
-            <ToggleSwitch IsOn="{Binding Simulated,Mode=TwoWay}" OnContent="Yes" OffContent="No"/>
-            <TextBlock>Mode:</TextBlock>
-            <ComboBox ItemsSource="{Binding Modes}" Width="110" SelectedItem="{Binding CurrentMode, Mode=TwoWay}"/>
-            <TextBlock >Writes: <Run Text="{Binding ValueWrites}"/> Sends: <Run Text="{Binding Sends}"/></TextBlock>
-        </StackPanel>
-        <TextBlock Name="logger" Grid.Row="3" Text="{Binding LogText}" />
-    </Grid>
+    <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
+                <VisualState x:Name="VisualStateNarrow">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NarrowMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <!--  TODO: change properties for narrow view  -->
+                        <Setter Target="stateTextBox.Text" Value="Narrow Visual State" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VisualStateNormal">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource NormalMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <!--  TODO: change properties for normal view  -->
+                        <Setter Target="stateTextBox.Text" Value="Normal Visual State" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState x:Name="VisualStateWide">
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="{StaticResource WideMinWidth}" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <!--  TODO: change properties for wide view  -->
+                        <Setter Target="stateTextBox.Text" Value="Wide Visual State" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+
+        <controls:PageHeader x:Name="pageHeader"
+                             RelativePanel.AlignLeftWithPanel="True"
+                             RelativePanel.AlignRightWithPanel="True"
+                             RelativePanel.AlignTopWithPanel="True"
+                             Text="Main Page">
+
+            <!--  secondary commands  -->
+            <controls:PageHeader.SecondaryCommands>
+                <!--<AppBarButton Click="{x:Bind ViewModel.GotoSettings}" Label="Settings" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoPrivacy}" Label="Privacy" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />-->
+            </controls:PageHeader.SecondaryCommands>
+
+        </controls:PageHeader>
+
+
+        <ScrollViewer
+            EntranceNavigationTransitionInfo.IsTargetElement="True"
+                       RelativePanel.AlignBottomWithPanel="True"
+                       RelativePanel.AlignLeftWithPanel="True"
+                       RelativePanel.AlignRightWithPanel="True"
+                       RelativePanel.Below="pageHeader"
+            >
+            <RelativePanel>
+
+                <VariableSizedWrapGrid Orientation="Horizontal" 
+                                   DataContext="{Binding SensorValues}" 
+                                   Name="gauges">
+                    <VariableSizedWrapGrid.Resources>
+                        <ResourceDictionary>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="FontSize" Value="20"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                            <Style TargetType="StackPanel">
+                                <Setter Property="Margin" Value="5,5,5,30"/>
+                                <Setter Property="MinWidth" Value="150"/>
+                                <Setter Property="MaxWidth" Value="300"/>
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                            <Style TargetType="gauge:Gauge">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                            </Style>
+                        </ResourceDictionary>
+                    </VariableSizedWrapGrid.Resources>
+                    <StackPanel>
+                        <gauge:Gauge Name="irObject" Value="{Binding IrObject}" 
+                             Maximum="100" Minimum="-20"/>
+                        <TextBlock>Object Temp (IR)</TextBlock>
+                    </StackPanel>
+                    <StackPanel>
+                        <gauge:Gauge Name="irWorld"
+                             Value="{Binding IrWorld}" Maximum="100" Minimum="-20"/>
+                        <TextBlock>World Temp (IR)</TextBlock>
+                    </StackPanel>
+                    <StackPanel>
+                        <gauge:Gauge Name="temperature" 
+                             Value="{Binding Temperature}" Maximum="100" Minimum="-20" />
+                        <TextBlock>Temperature</TextBlock>
+                    </StackPanel>
+                    <StackPanel>
+                        <gauge:Gauge Name="humidity"  
+                             Value="{Binding Humidity}" Maximum="100" Minimum="0"  />
+                        <TextBlock>Humidity</TextBlock>
+                    </StackPanel>
+                    <StackPanel>
+                        <gauge:Gauge Name="lux" 
+                             Value="{Binding Lux}" Maximum="100000" Minimum="0"/>
+                        <TextBlock>Lux</TextBlock>
+                    </StackPanel>
+                </VariableSizedWrapGrid>
+
+                <Ellipse Name="Light" Stretch="Uniform"
+                     MinHeight="150"
+                     Margin="5" Fill="{Binding Light}"
+                     RelativePanel.AlignLeftWith="gauges" 
+                     RelativePanel.Below="gauges" />
+
+
+                <!--<controls:Resizer x:Name="parameterResizer" Margin="16,16,16,0">
+
+                <TextBox MinWidth="150"
+                         MinHeight="62"
+                         Header="Parameter to pass"
+                         Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         TextWrapping="Wrap">
+                    <Interactivity:Interaction.Behaviors>
+
+                        -->
+                <!--  enable submit on enter key  -->
+                <!--
+                        <Behaviors:KeyBehavior Key="Enter">
+                            <Core:CallMethodAction MethodName="GotoDetailsPage" TargetObject="{Binding}" />
+                        </Behaviors:KeyBehavior>
+
+                        -->
+                <!--  focus on textbox when page loads  -->
+                <!--
+                        <Core:EventTriggerBehavior>
+                            <Behaviors:FocusAction />
+                        </Core:EventTriggerBehavior>
+
+                    </Interactivity:Interaction.Behaviors>
+                </TextBox>
+
+            </controls:Resizer>
+
+            <Button x:Name="submitButton"
+                    Click="{x:Bind ViewModel.GotoDetailsPage}"
+                    Content="Submit"
+                    RelativePanel.AlignBottomWith="parameterResizer"
+                    RelativePanel.RightOf="parameterResizer" />
+
+            <TextBlock x:Name="stateTextBox"
+                       Margin="16,16,0,0"
+                       RelativePanel.AlignLeftWith="parameterResizer"
+                       RelativePanel.Below="parameterResizer"
+                       Text="Current Visual State" />-->
+
+                <StackPanel Name="selectors" Grid.Row="2" Orientation="Horizontal" RelativePanel.Below="Light">
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                            <Setter Property="Margin" Value="5"/>
+                        </Style>
+                        <Style TargetType="ComboBox">
+                            <Setter Property="VerticalAlignment" Value="Center"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBlock>Send to cloud:</TextBlock>
+                    <ToggleSwitch IsOn="{Binding SendEnabled,Mode=TwoWay}"/>
+                    <TextBlock>Simulated:</TextBlock>
+                    <ToggleSwitch IsOn="{Binding Simulated,Mode=TwoWay}" OnContent="Yes" OffContent="No"/>
+                    <TextBlock>Mode:</TextBlock>
+                    <ComboBox ItemsSource="{Binding Modes}" Width="110" SelectedItem="{Binding CurrentMode, Mode=TwoWay}"/>
+                    <TextBlock >Writes: <Run Text="{Binding ValueWrites}"/> Sends: <Run Text="{Binding Sends}"/></TextBlock>
+                </StackPanel>
+                <TextBlock Name="logger" Grid.Row="3" Text="{Binding LogText}" 
+                       RelativePanel.Below="selectors" />
+
+            </RelativePanel>
+        </ScrollViewer>
+    </RelativePanel>
 </Page>

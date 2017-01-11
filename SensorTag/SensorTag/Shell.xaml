@@ -17,9 +17,9 @@
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <RadioButton Command="{Binding NavCommand}" Content="Home" GroupName="Nav">
-                    <!--<RadioButton.CommandParameter>
+                    <RadioButton.CommandParameter>
                         <views:ConfigPage/>
-                    </RadioButton.CommandParameter>-->
+                    </RadioButton.CommandParameter>
                 </RadioButton>
             </Grid>            
         </SplitView.Pane>

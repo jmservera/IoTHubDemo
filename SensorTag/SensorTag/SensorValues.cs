@@ -8,11 +8,8 @@ namespace SensorTag
 {
     public class SensorValues : BindableBase
     {
-        CoreDispatcher dispatcher;
-
         public SensorValues()
         {
-            dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
         }
 
         private double lux;

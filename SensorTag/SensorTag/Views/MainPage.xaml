@@ -14,9 +14,7 @@
     <Page.DataContext>
         <StaticResource ResourceKey="ViewModel"/>
     </Page.DataContext>
-
     <RelativePanel Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup x:Name="AdaptiveVisualStateGroup">
                 <VisualState x:Name="VisualStateNarrow">
@@ -48,7 +46,6 @@
                 </VisualState>
             </VisualStateGroup>
         </VisualStateManager.VisualStateGroups>
-
         <controls:PageHeader x:Name="pageHeader"
                              RelativePanel.AlignLeftWithPanel="True"
                              RelativePanel.AlignRightWithPanel="True"
@@ -63,17 +60,13 @@
             </controls:PageHeader.SecondaryCommands>
 
         </controls:PageHeader>
-
-
         <ScrollViewer
             EntranceNavigationTransitionInfo.IsTargetElement="True"
                        RelativePanel.AlignBottomWithPanel="True"
                        RelativePanel.AlignLeftWithPanel="True"
                        RelativePanel.AlignRightWithPanel="True"
-                       RelativePanel.Below="pageHeader"
-            >
+                       RelativePanel.Below="pageHeader">
             <RelativePanel>
-
                 <VariableSizedWrapGrid Orientation="Horizontal" 
                                    DataContext="{Binding SensorValues}" 
                                    Name="gauges">
@@ -120,16 +113,12 @@
                         <TextBlock>Lux</TextBlock>
                     </StackPanel>
                 </VariableSizedWrapGrid>
-
                 <Ellipse Name="Light" Stretch="Uniform"
                      MinHeight="150"
                      Margin="5" Fill="{Binding Light}"
                      RelativePanel.AlignLeftWith="gauges" 
                      RelativePanel.Below="gauges" />
-
-
                 <!--<controls:Resizer x:Name="parameterResizer" Margin="16,16,16,0">
-
                 <TextBox MinWidth="150"
                          MinHeight="62"
                          Header="Parameter to pass"
@@ -167,7 +156,6 @@
                        RelativePanel.AlignLeftWith="parameterResizer"
                        RelativePanel.Below="parameterResizer"
                        Text="Current Visual State" />-->
-
                 <StackPanel Name="selectors" Grid.Row="2" Orientation="Horizontal" RelativePanel.Below="Light">
                     <StackPanel.Resources>
                         <Style TargetType="TextBlock">
@@ -188,7 +176,6 @@
                 </StackPanel>
                 <TextBlock Name="logger" Grid.Row="3" Text="{Binding LogText}" 
                        RelativePanel.Below="selectors" />
-
             </RelativePanel>
         </ScrollViewer>
     </RelativePanel>

@@ -102,6 +102,9 @@
     </Compile>
     <Compile Include="Design\DesignDataService.cs" />
     <Compile Include="DoubleEventArgs.cs" />
+    <Compile Include="Models\Config.cs" />
+    <Compile Include="Models\SensorInfo.cs" />
+    <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
     <Compile Include="Views\Busy.xaml.cs">
       <DependentUpon>Busy.xaml</DependentUpon>
@@ -186,12 +189,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Common\Common.csproj">
-      <Project>{5dd7bf85-b31e-40a1-969e-8756319b4d2e}</Project>
-      <Name>Common</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

@@ -1,6 +1,7 @@
-﻿using Common;
-using Microsoft.Azure.Devices.Client;
+﻿using Microsoft.Azure.Devices.Client;
 using Newtonsoft.Json;
+using SensorTag.Models;
+using SensorTag.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,8 +35,6 @@ namespace SensorTag.ViewModels
         const string HUMIDUNITS = "%";
         const string LUXUNITS = "%";
 
-        Geoposition position;
-
         DeviceClient ioTHubDeviceClient;
         CancellationTokenSource ioTHubReceiverToken;
 
@@ -62,7 +61,6 @@ namespace SensorTag.ViewModels
             {
                 currentMode = value;
                 Set(ref currentMode, value);
-                connect();
             }
         }
 
@@ -126,7 +124,7 @@ namespace SensorTag.ViewModels
         }
 
 
-        private async void connect()
+        private async Task connectAsync()
         {
             Logger.Log($"Connecting to {currentMode}", LogLevel.Warning);
             try
@@ -188,7 +186,7 @@ namespace SensorTag.ViewModels
                             ioTHubDeviceClient = DeviceClient.Create(Config.Default.IotHubUri, key, TransportType.Http1);
 
                             ioTHubReceiverToken = new CancellationTokenSource();
-                            startMessageReceiver(ioTHubDeviceClient, ioTHubReceiverToken.Token);
+                            await startMessageReceiver(ioTHubDeviceClient, ioTHubReceiverToken.Token);
                         }
                         break;
                     case "IoTSuite":
@@ -197,7 +195,7 @@ namespace SensorTag.ViewModels
                             ioTSuiteDeviceClient = DeviceClient.Create(Config.Default.IotSuiteUri, key, TransportType.Http1);
 
                             ioTSuiteReceiverToken = new CancellationTokenSource();
-                            startMessageReceiver(ioTSuiteDeviceClient, ioTSuiteReceiverToken.Token);
+                            await startMessageReceiver(ioTSuiteDeviceClient, ioTSuiteReceiverToken.Token);
 
                             //initialize
 
@@ -228,13 +226,13 @@ namespace SensorTag.ViewModels
                                     DeviceID = Config.Default.IotSuiteDeviceName,
                                     HubEnabledState = 1,
                                     DeviceState = "normal",
-                                    Manufacturer = "Juanma",
-                                    Latitude = position?.Coordinate.Latitude,
-                                    Longitude = position?.Coordinate.Longitude,
-                                    Platform = "csharp"
+                                    Manufacturer = "DXperience",
+                                    Latitude = position?.Coordinate.Point.Position.Latitude,
+                                    Longitude = position?.Coordinate.Point.Position.Longitude,
+                                    Platform = "CSharp"
                                 },
                                 Commands = new[] {
-                                    new {Name="SetHumidity", Parameters= new[] { new {Name="humidity",Type="double" } } }
+                                    new {Name="Alert", Parameters= new[] { new {Name="color",Type="string" } } }
                                 }
                             });
                             var message = new Message(Encoding.UTF8.GetBytes(data));
@@ -283,9 +281,18 @@ namespace SensorTag.ViewModels
         public MainViewModel()
         {
             Logger.LogReceived += log;
+            PropertyChanged += MainViewModel_PropertyChanged;
         }
 
-        private async void startMessageReceiver(DeviceClient deviceClient, CancellationToken token)
+        private async void MainViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(CurrentMode))
+            {
+                await connectAsync();
+            }
+        }
+
+        async Task startMessageReceiver(DeviceClient deviceClient, CancellationToken token)
         {
             while (!token.IsCancellationRequested)
             {
@@ -340,20 +347,19 @@ namespace SensorTag.ViewModels
             return null;
         }
         bool initialized;
-        public override Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
+        public override async Task OnNavigatedToAsync(object parameter, NavigationMode mode, IDictionary<string, object> state)
         {
             if (!initialized)
             {
                 initialized = true;
                 simulatedTimer = new Timer(simulateValues, this, Timeout.Infinite, 1000);
-                init();
-                connect();
+                await init();
+                await connectAsync();
             }
-            return base.OnNavigatedToAsync(parameter, mode, state);
+            await base.OnNavigatedToAsync(parameter, mode, state);
         }
-        async void init()
+        async Task init()
         {
-            valuesSender = new Timer(sendValues, null, 1000, 1000);
             var tag = new SensorTag();
             while (!tag.Connected)
             {
@@ -372,6 +378,7 @@ namespace SensorTag.ViewModels
                     await Task.Delay(2000);
                 }
             }
+            valuesSender = new Timer(sendValues, null, 1000, 1000);
 
             tag.HumidityReceived += Tag_HumidityReceived;
             tag.TemperatureReceived += Tag_TemperatureReceived;
@@ -447,9 +454,6 @@ namespace SensorTag.ViewModels
             }
         }
 
-
-
-
         private async void sendValues(object state)
         {
             int count = 0;
@@ -521,7 +525,7 @@ namespace SensorTag.ViewModels
 
                                 message.MessageAnnotations = new Amqp.Framing.MessageAnnotations();
                                 message.MessageAnnotations[new Amqp.Types.Symbol("x-opt-partition-key")] =
-                                   string.Format("pk:", partitionKey);
+                                   string.Format("pk:{0}", partitionKey);
                                 await Task.Run(() => senderlink.Send(message));
                             }
                             else

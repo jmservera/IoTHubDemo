@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common
+namespace SensorTag.Models
 {
     /// <summary>
     /// A POCO object to send the information via JSON

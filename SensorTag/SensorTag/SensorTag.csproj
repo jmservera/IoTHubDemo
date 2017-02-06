@@ -106,6 +106,7 @@
     <Compile Include="Models\SensorInfo.cs" />
     <Compile Include="Services\Logger.cs" />
     <Compile Include="Services\SettingsServices\SettingsService.cs" />
+    <Compile Include="ViewModels\ConfigViewModel.cs" />
     <Compile Include="Views\Busy.xaml.cs">
       <DependentUpon>Busy.xaml</DependentUpon>
     </Compile>

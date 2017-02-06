@@ -5,9 +5,45 @@
     xmlns:local="using:SensorTag.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      xmlns:controls="using:Template10.Controls"
+    xmlns:vm="using:SensorTag.ViewModels"
     mc:Ignorable="d">
+    <Page.Resources>
+        <ResourceDictionary>
+            <vm:ConfigViewModel x:Name="ConfigViewModel"/>
+        </ResourceDictionary>
+    </Page.Resources>
+    <Page.DataContext>
+        <StaticResource ResourceKey="ConfigViewModel"/>
+    </Page.DataContext>
+    <RelativePanel  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <controls:PageHeader x:Name="pageHeader"
+                             RelativePanel.AlignLeftWithPanel="True"
+                             RelativePanel.AlignRightWithPanel="True"
+                             RelativePanel.AlignTopWithPanel="True"
+                             Text="Settings">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+            <!--  secondary commands  -->
+            <controls:PageHeader.SecondaryCommands>
+                <!--<AppBarButton Click="{x:Bind ViewModel.GotoSettings}" Label="Settings" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoPrivacy}" Label="Privacy" />
+                <AppBarButton Click="{x:Bind ViewModel.GotoAbout}" Label="About" />-->
+            </controls:PageHeader.SecondaryCommands>
 
-    </Grid>
+        </controls:PageHeader>
+
+        <RelativePanel RelativePanel.Below="pageHeader" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignBottomWithPanel="True" DataContext="{Binding CurrentConfig}">
+            <RelativePanel.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="20"/>
+                </Style>
+            </RelativePanel.Style>
+            <TextBlock Name="IoTHubUriLabel">IoT Hub Uri:</TextBlock>
+            <TextBox Name="IoTHubUri" Text="{Binding IotHubUri, Mode=TwoWay}" RelativePanel.RightOf="IoTHubUriLabel" Width="500"/>
+            <TextBlock Name="DeviceNameLabel" RelativePanel.Below="IoTHubUri">Device Name:</TextBlock>
+            <TextBox Name="DeviceName" Width="500" Text="{Binding DeviceName, Mode=TwoWay}" RelativePanel.Below="IoTHubUri" RelativePanel.RightOf="DeviceNameLabel"/>
+            <Line Stroke="Beige" Margin="20" RelativePanel.Below="DeviceName" Width="500"/>
+            
+        </RelativePanel>
+    </RelativePanel>
 </Page>

@@ -62,25 +62,37 @@
           "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll": {}
         }
       },
-      "Microsoft.Azure.Amqp/1.1.5": {
+      "Microsoft.Azure.Amqp/2.0.3": {
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         }
       },
-      "Microsoft.Azure.Devices.Client/1.0.13": {
+      "Microsoft.Azure.Devices.Client/1.2.2": {
         "dependencies": {
           "Microsoft.AspNet.WebApi.Client": "5.2.3",
-          "Microsoft.Azure.Amqp": "1.1.5",
-          "PCLCrypto": "1.0.86"
+          "Microsoft.Azure.Amqp": "2.0.3",
+          "Microsoft.Azure.Devices.Shared": "1.0.6",
+          "PCLCrypto": "2.0.147"
         },
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
+        }
+      },
+      "Microsoft.Azure.Devices.Shared/1.0.6": {
+        "dependencies": {
+          "Newtonsoft.Json": "6.0.8"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -384,15 +396,59 @@
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
-      "PCLCrypto/1.0.86": {
+      "PCLCrypto/2.0.147": {
         "dependencies": {
-          "Validation": "[2.0.6, 3.0.0)"
+          "PInvoke.NCrypt": "0.3.2",
+          "Validation": "2.2.8"
         },
         "compile": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
         },
         "runtime": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
+        }
+      },
+      "PInvoke.BCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.Kernel32": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        }
+      },
+      "PInvoke.Kernel32/0.3.2": {
+        "dependencies": {
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        }
+      },
+      "PInvoke.NCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.BCrypt": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        }
+      },
+      "PInvoke.Windows.Core/0.3.2": {
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -1928,12 +1984,12 @@
           }
         }
       },
-      "Validation/2.0.6.15003": {
+      "Validation/2.2.8": {
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         }
       },
       "WinRTXamlToolkit.Controls.Gauge.UWP/1.9.4": {
@@ -2005,25 +2061,37 @@
           "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll": {}
         }
       },
-      "Microsoft.Azure.Amqp/1.1.5": {
+      "Microsoft.Azure.Amqp/2.0.3": {
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         }
       },
-      "Microsoft.Azure.Devices.Client/1.0.13": {
+      "Microsoft.Azure.Devices.Client/1.2.2": {
         "dependencies": {
           "Microsoft.AspNet.WebApi.Client": "5.2.3",
-          "Microsoft.Azure.Amqp": "1.1.5",
-          "PCLCrypto": "1.0.86"
+          "Microsoft.Azure.Amqp": "2.0.3",
+          "Microsoft.Azure.Devices.Shared": "1.0.6",
+          "PCLCrypto": "2.0.147"
         },
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
+        }
+      },
+      "Microsoft.Azure.Devices.Shared/1.0.6": {
+        "dependencies": {
+          "Newtonsoft.Json": "6.0.8"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -2320,15 +2388,59 @@
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
-      "PCLCrypto/1.0.86": {
+      "PCLCrypto/2.0.147": {
         "dependencies": {
-          "Validation": "[2.0.6, 3.0.0)"
+          "PInvoke.NCrypt": "0.3.2",
+          "Validation": "2.2.8"
         },
         "compile": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
         },
         "runtime": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
+        }
+      },
+      "PInvoke.BCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.Kernel32": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        }
+      },
+      "PInvoke.Kernel32/0.3.2": {
+        "dependencies": {
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        }
+      },
+      "PInvoke.NCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.BCrypt": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        }
+      },
+      "PInvoke.Windows.Core/0.3.2": {
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -3724,12 +3836,12 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Validation/2.0.6.15003": {
+      "Validation/2.2.8": {
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         }
       },
       "WinRTXamlToolkit.Controls.Gauge.UWP/1.9.4": {
@@ -3801,25 +3913,37 @@
           "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll": {}
         }
       },
-      "Microsoft.Azure.Amqp/1.1.5": {
+      "Microsoft.Azure.Amqp/2.0.3": {
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         }
       },
-      "Microsoft.Azure.Devices.Client/1.0.13": {
+      "Microsoft.Azure.Devices.Client/1.2.2": {
         "dependencies": {
           "Microsoft.AspNet.WebApi.Client": "5.2.3",
-          "Microsoft.Azure.Amqp": "1.1.5",
-          "PCLCrypto": "1.0.86"
+          "Microsoft.Azure.Amqp": "2.0.3",
+          "Microsoft.Azure.Devices.Shared": "1.0.6",
+          "PCLCrypto": "2.0.147"
         },
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
+        }
+      },
+      "Microsoft.Azure.Devices.Shared/1.0.6": {
+        "dependencies": {
+          "Newtonsoft.Json": "6.0.8"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -4102,15 +4226,59 @@
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
-      "PCLCrypto/1.0.86": {
+      "PCLCrypto/2.0.147": {
         "dependencies": {
-          "Validation": "[2.0.6, 3.0.0)"
+          "PInvoke.NCrypt": "0.3.2",
+          "Validation": "2.2.8"
         },
         "compile": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
         },
         "runtime": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
+        }
+      },
+      "PInvoke.BCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.Kernel32": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        }
+      },
+      "PInvoke.Kernel32/0.3.2": {
+        "dependencies": {
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        }
+      },
+      "PInvoke.NCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.BCrypt": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        }
+      },
+      "PInvoke.Windows.Core/0.3.2": {
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -5484,12 +5652,12 @@
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Validation/2.0.6.15003": {
+      "Validation/2.2.8": {
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         }
       },
       "WinRTXamlToolkit.Controls.Gauge.UWP/1.9.4": {
@@ -5561,25 +5729,37 @@
           "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll": {}
         }
       },
-      "Microsoft.Azure.Amqp/1.1.5": {
+      "Microsoft.Azure.Amqp/2.0.3": {
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         }
       },
-      "Microsoft.Azure.Devices.Client/1.0.13": {
+      "Microsoft.Azure.Devices.Client/1.2.2": {
         "dependencies": {
           "Microsoft.AspNet.WebApi.Client": "5.2.3",
-          "Microsoft.Azure.Amqp": "1.1.5",
-          "PCLCrypto": "1.0.86"
+          "Microsoft.Azure.Amqp": "2.0.3",
+          "Microsoft.Azure.Devices.Shared": "1.0.6",
+          "PCLCrypto": "2.0.147"
         },
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
+        }
+      },
+      "Microsoft.Azure.Devices.Shared/1.0.6": {
+        "dependencies": {
+          "Newtonsoft.Json": "6.0.8"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -5882,15 +6062,59 @@
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
-      "PCLCrypto/1.0.86": {
+      "PCLCrypto/2.0.147": {
         "dependencies": {
-          "Validation": "[2.0.6, 3.0.0)"
+          "PInvoke.NCrypt": "0.3.2",
+          "Validation": "2.2.8"
         },
         "compile": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
         },
         "runtime": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
+        }
+      },
+      "PInvoke.BCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.Kernel32": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        }
+      },
+      "PInvoke.Kernel32/0.3.2": {
+        "dependencies": {
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        }
+      },
+      "PInvoke.NCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.BCrypt": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        }
+      },
+      "PInvoke.Windows.Core/0.3.2": {
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -7286,12 +7510,12 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Validation/2.0.6.15003": {
+      "Validation/2.2.8": {
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         }
       },
       "WinRTXamlToolkit.Controls.Gauge.UWP/1.9.4": {
@@ -7363,25 +7587,37 @@
           "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll": {}
         }
       },
-      "Microsoft.Azure.Amqp/1.1.5": {
+      "Microsoft.Azure.Amqp/2.0.3": {
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         }
       },
-      "Microsoft.Azure.Devices.Client/1.0.13": {
+      "Microsoft.Azure.Devices.Client/1.2.2": {
         "dependencies": {
           "Microsoft.AspNet.WebApi.Client": "5.2.3",
-          "Microsoft.Azure.Amqp": "1.1.5",
-          "PCLCrypto": "1.0.86"
+          "Microsoft.Azure.Amqp": "2.0.3",
+          "Microsoft.Azure.Devices.Shared": "1.0.6",
+          "PCLCrypto": "2.0.147"
         },
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
+        }
+      },
+      "Microsoft.Azure.Devices.Shared/1.0.6": {
+        "dependencies": {
+          "Newtonsoft.Json": "6.0.8"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -7664,15 +7900,59 @@
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
-      "PCLCrypto/1.0.86": {
+      "PCLCrypto/2.0.147": {
         "dependencies": {
-          "Validation": "[2.0.6, 3.0.0)"
+          "PInvoke.NCrypt": "0.3.2",
+          "Validation": "2.2.8"
         },
         "compile": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
         },
         "runtime": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
+        }
+      },
+      "PInvoke.BCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.Kernel32": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        }
+      },
+      "PInvoke.Kernel32/0.3.2": {
+        "dependencies": {
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        }
+      },
+      "PInvoke.NCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.BCrypt": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        }
+      },
+      "PInvoke.Windows.Core/0.3.2": {
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -9046,12 +9326,12 @@
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Validation/2.0.6.15003": {
+      "Validation/2.2.8": {
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         }
       },
       "WinRTXamlToolkit.Controls.Gauge.UWP/1.9.4": {
@@ -9123,25 +9403,37 @@
           "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll": {}
         }
       },
-      "Microsoft.Azure.Amqp/1.1.5": {
+      "Microsoft.Azure.Amqp/2.0.3": {
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         }
       },
-      "Microsoft.Azure.Devices.Client/1.0.13": {
+      "Microsoft.Azure.Devices.Client/1.2.2": {
         "dependencies": {
           "Microsoft.AspNet.WebApi.Client": "5.2.3",
-          "Microsoft.Azure.Amqp": "1.1.5",
-          "PCLCrypto": "1.0.86"
+          "Microsoft.Azure.Amqp": "2.0.3",
+          "Microsoft.Azure.Devices.Shared": "1.0.6",
+          "PCLCrypto": "2.0.147"
         },
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
+        }
+      },
+      "Microsoft.Azure.Devices.Shared/1.0.6": {
+        "dependencies": {
+          "Newtonsoft.Json": "6.0.8"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -9444,15 +9736,59 @@
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
-      "PCLCrypto/1.0.86": {
+      "PCLCrypto/2.0.147": {
         "dependencies": {
-          "Validation": "[2.0.6, 3.0.0)"
+          "PInvoke.NCrypt": "0.3.2",
+          "Validation": "2.2.8"
         },
         "compile": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
         },
         "runtime": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
+        }
+      },
+      "PInvoke.BCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.Kernel32": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        }
+      },
+      "PInvoke.Kernel32/0.3.2": {
+        "dependencies": {
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        }
+      },
+      "PInvoke.NCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.BCrypt": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        }
+      },
+      "PInvoke.Windows.Core/0.3.2": {
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -10848,12 +11184,12 @@
           "lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Validation/2.0.6.15003": {
+      "Validation/2.2.8": {
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         }
       },
       "WinRTXamlToolkit.Controls.Gauge.UWP/1.9.4": {
@@ -10925,25 +11261,37 @@
           "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.dll": {}
         }
       },
-      "Microsoft.Azure.Amqp/1.1.5": {
+      "Microsoft.Azure.Amqp/2.0.3": {
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll": {}
+          "lib/uap10.0/Microsoft.Azure.Amqp.dll": {}
         }
       },
-      "Microsoft.Azure.Devices.Client/1.0.13": {
+      "Microsoft.Azure.Devices.Client/1.2.2": {
         "dependencies": {
           "Microsoft.AspNet.WebApi.Client": "5.2.3",
-          "Microsoft.Azure.Amqp": "1.1.5",
-          "PCLCrypto": "1.0.86"
+          "Microsoft.Azure.Amqp": "2.0.3",
+          "Microsoft.Azure.Devices.Shared": "1.0.6",
+          "PCLCrypto": "2.0.147"
         },
         "compile": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
         },
         "runtime": {
-          "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd": {}
+          "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll": {}
+        }
+      },
+      "Microsoft.Azure.Devices.Shared/1.0.6": {
+        "dependencies": {
+          "Newtonsoft.Json": "6.0.8"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll": {}
         }
       },
       "Microsoft.Bcl/1.1.9": {
@@ -11226,15 +11574,59 @@
           "lib/portable-net45+wp80+win8+wpa81+dnxcore50/Newtonsoft.Json.dll": {}
         }
       },
-      "PCLCrypto/1.0.86": {
+      "PCLCrypto/2.0.147": {
         "dependencies": {
-          "Validation": "[2.0.6, 3.0.0)"
+          "PInvoke.NCrypt": "0.3.2",
+          "Validation": "2.2.8"
         },
         "compile": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
         },
         "runtime": {
-          "lib/win81/PCLCrypto.dll": {}
+          "lib/portable-win81+wpa81/PCLCrypto.dll": {}
+        }
+      },
+      "PInvoke.BCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.Kernel32": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll": {}
+        }
+      },
+      "PInvoke.Kernel32/0.3.2": {
+        "dependencies": {
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll": {}
+        }
+      },
+      "PInvoke.NCrypt/0.3.2": {
+        "dependencies": {
+          "PInvoke.BCrypt": "0.3.2",
+          "PInvoke.Windows.Core": "0.3.2"
+        },
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll": {}
+        }
+      },
+      "PInvoke.Windows.Core/0.3.2": {
+        "compile": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
+        },
+        "runtime": {
+          "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll": {}
         }
       },
       "System.AppContext/4.0.0": {
@@ -12608,12 +13000,12 @@
           "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll": {}
         }
       },
-      "Validation/2.0.6.15003": {
+      "Validation/2.2.8": {
         "compile": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         },
         "runtime": {
-          "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll": {}
+          "lib/dotnet/Validation.dll": {}
         }
       },
       "WinRTXamlToolkit.Controls.Gauge.UWP/1.9.4": {
@@ -12628,8 +13020,9 @@
   },
   "libraries": {
     "AMQPNetLite/1.1.8": {
-      "sha512": "Kxw1M2uVBvG7bvs7rnZo0jxky0O8tiHnJkUhCwmlGPhJwS6LPTuGF6koPGvslaTHD2sfUgzxUj5OmghZneIGQQ==",
+      "sha512": "NY5bpvO/XTfjnOGespMJuWidWoIZb9G7Vnm2g85jFVbmrrLXxlDBtK0grjgnaayT4GuUzBE45A3mnDStqBLi+w==",
       "type": "package",
+      "path": "AMQPNetLite/1.1.8",
       "files": [
         "AMQPNetLite.1.1.8.nupkg.sha512",
         "AMQPNetLite.nuspec",
@@ -12731,19 +13124,18 @@
       ]
     },
     "Microsoft.ApplicationInsights.WindowsApps/1.0.0": {
-      "sha512": "fNCAjIwvbTV+G0dT14bgM5tptsqeSaKQaCrlq7QknOq1Xdm8ZmgsDYddMgXkvykyKLjWyU6fKuOpj6fsQJy+wQ==",
-      "type": "Package",
+      "sha512": "NvBQnFeiFd0O1QdBz06UGApD7zn7ztVi7qO18IsM3EjiXRNgfrEBXB+azNm8XqLY8xGFAqh3HAuSd/wHZMe0XA==",
+      "type": "package",
+      "path": "Microsoft.ApplicationInsights.WindowsApps/1.0.0",
       "files": [
+        "Microsoft.ApplicationInsights.WindowsApps.1.0.0.nupkg.sha512",
         "Microsoft.ApplicationInsights.WindowsApps.nuspec",
-        "[Content_Types].xml",
-        "_rels/.rels",
         "lib/win81/Microsoft.ApplicationInsights.Extensibility.Windows.XML",
         "lib/win81/Microsoft.ApplicationInsights.Extensibility.Windows.dll",
         "lib/wp8/Microsoft.ApplicationInsights.Extensibility.Windows.XML",
         "lib/wp8/Microsoft.ApplicationInsights.Extensibility.Windows.dll",
         "lib/wpa81/Microsoft.ApplicationInsights.Extensibility.Windows.XML",
-        "lib/wpa81/Microsoft.ApplicationInsights.Extensibility.Windows.dll",
-        "package/services/metadata/core-properties/4f6f732debe548beaa1183418e8d65cc.psmdcp"
+        "lib/wpa81/Microsoft.ApplicationInsights.Extensibility.Windows.dll"
       ]
     },
     "Microsoft.AspNet.WebApi.Client/5.2.3": {
@@ -12758,27 +13150,49 @@
         "lib/portable-wp8+netcore45+net45+wp81+wpa81/System.Net.Http.Formatting.xml"
       ]
     },
-    "Microsoft.Azure.Amqp/1.1.5": {
-      "sha512": "6+3lPVW46h3H2NvjGtrHv+C0P3PVH11pZyCePm+w8AuhmX59OY+fvbA9/wll0MRAj81LPpz1i55oIQm41wOv7g==",
+    "Microsoft.Azure.Amqp/2.0.3": {
+      "sha512": "rsvO6QAPaUvcln5+riYQucdsv1mAdk8UJvNCq7pSGvjbtQ7sf4Mi5R4kt4bXg8KiXCa1qXL0v9K/QquR1Ndi4w==",
       "type": "package",
+      "path": "Microsoft.Azure.Amqp/2.0.3",
       "files": [
-        "Microsoft.Azure.Amqp.1.1.5.nupkg.sha512",
+        "Microsoft.Azure.Amqp.2.0.3.nupkg.sha512",
         "Microsoft.Azure.Amqp.nuspec",
-        "lib/net451/Microsoft.Azure.Amqp.XML",
-        "lib/net451/Microsoft.Azure.Amqp.dll",
-        "lib/uap10.0/Microsoft.Azure.Amqp.Uwp.dll"
+        "lib/monoandroid/Microsoft.Azure.Amqp.dll",
+        "lib/net45/Microsoft.Azure.Amqp.XML",
+        "lib/net45/Microsoft.Azure.Amqp.dll",
+        "lib/netstandard1.3/Microsoft.Azure.Amqp.XML",
+        "lib/netstandard1.3/Microsoft.Azure.Amqp.dll",
+        "lib/portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10+UAP10/Microsoft.Azure.Amqp.dll",
+        "lib/uap10.0/Microsoft.Azure.Amqp.dll",
+        "lib/uap10.0/Microsoft.Azure.Amqp.pri"
       ]
     },
-    "Microsoft.Azure.Devices.Client/1.0.13": {
-      "sha512": "jlI5C5UTr5Yo4ggVwQi1FE76hFIDWhVAysfQaTzOX9nwOM+b9kevWvMtAuiIfxOxmEMLbRQvz4yUWEEGI9IiYg==",
+    "Microsoft.Azure.Devices.Client/1.2.2": {
+      "sha512": "Ok5OsU8lsvf5bW7weRag+6BIca315wqN7cHOMnBBI6rYefIMIKv//KMjQHVqkvnlJwwck5upbc7pZeWt5MSFXw==",
       "type": "package",
+      "path": "Microsoft.Azure.Devices.Client/1.2.2",
       "files": [
-        "Microsoft.Azure.Devices.Client.1.0.13.nupkg.sha512",
+        "Microsoft.Azure.Devices.Client.1.2.2.nupkg.sha512",
         "Microsoft.Azure.Devices.Client.nuspec",
         "build/native/Microsoft.Azure.Devices.Client.targets",
-        "lib/native/Microsoft.Azure.Devices.Client.winmd",
         "lib/net45/Microsoft.Azure.Devices.Client.dll",
-        "lib/uap10.0/Microsoft.Azure.Devices.Client.winmd",
+        "lib/portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10+UAP10/Microsoft.Azure.Devices.Client.PCL.dll",
+        "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.dll",
+        "lib/uap10.0/Microsoft.Azure.Devices.Client.UWP.pri",
+        "thirdpartynotice.txt"
+      ]
+    },
+    "Microsoft.Azure.Devices.Shared/1.0.6": {
+      "sha512": "I11fzSr7ZkIKmkjv2b3x2Q5ww9eysYjZhH5vEIgLfoK6YguCotxDijZRz/MGtQfqUBbY2++PXGHVFmFcCi3XKw==",
+      "type": "package",
+      "path": "Microsoft.Azure.Devices.Shared/1.0.6",
+      "files": [
+        "Microsoft.Azure.Devices.Shared.1.0.6.nupkg.sha512",
+        "Microsoft.Azure.Devices.Shared.nuspec",
+        "lib/net45/Microsoft.Azure.Devices.Shared.dll",
+        "lib/portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10+UAP10/Microsoft.Azure.Devices.Shared.PCL.dll",
+        "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.dll",
+        "lib/uap10.0/Microsoft.Azure.Devices.Shared.UWP.pri",
         "thirdpartynotice.txt"
       ]
     },
@@ -13773,32 +14187,85 @@
         "tools/install.ps1"
       ]
     },
-    "PCLCrypto/1.0.86": {
-      "sha512": "rcmxw9Bb5GuEW1ubVBegCCbR7YU8Ptr8tGfmyVHBnK+UQlk29TuBryHXmsTglt64ZNDXpi8rWl8x5l55JylpOw==",
+    "PCLCrypto/2.0.147": {
+      "sha512": "OFNDBjhP+qPukqB8PiGbWDo70gHsEzSKupL47JisjYFQaGwlPPCnN8ah59QCzIvsg9IUr2AecGKXF3ONpyFL9g==",
       "type": "package",
+      "path": "PCLCrypto/2.0.147",
       "files": [
-        "PCLCrypto.1.0.86.nupkg.sha512",
+        "PCLCrypto.2.0.147.nupkg.sha512",
         "PCLCrypto.nuspec",
-        "lib/Xamarin.iOS/PCLCrypto.dll",
-        "lib/Xamarin.iOS/PCLCrypto.xml",
-        "lib/monoandroid/PCLCrypto.dll",
-        "lib/monoandroid/PCLCrypto.xml",
-        "lib/monotouch/PCLCrypto.dll",
-        "lib/monotouch/PCLCrypto.xml",
-        "lib/net40-Client/PCLCrypto.dll",
-        "lib/net40-Client/PCLCrypto.xml",
-        "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10/PCLCrypto.dll",
-        "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10/PCLCrypto.xml",
-        "lib/sl5/PCLCrypto.dll",
-        "lib/sl5/PCLCrypto.xml",
-        "lib/win81/PCLCrypto.dll",
-        "lib/win81/PCLCrypto.pri",
-        "lib/win81/PCLCrypto.xml",
-        "lib/wp8/PCLCrypto.dll",
-        "lib/wp8/PCLCrypto.xml",
-        "lib/wpa81/PCLCrypto.dll",
-        "lib/wpa81/PCLCrypto.pri",
-        "lib/wpa81/PCLCrypto.xml"
+        "lib/MonoAndroid23/PCLCrypto.dll",
+        "lib/MonoAndroid23/PCLCrypto.xml",
+        "lib/MonoTouch10/PCLCrypto.dll",
+        "lib/MonoTouch10/PCLCrypto.xml",
+        "lib/net45/PCLCrypto.dll",
+        "lib/net45/PCLCrypto.xml",
+        "lib/portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10/PCLCrypto.dll",
+        "lib/portable-net45+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10/PCLCrypto.xml",
+        "lib/portable-win81+wpa81/PCLCrypto.dll",
+        "lib/portable-win81+wpa81/PCLCrypto.xml",
+        "lib/wp80/PCLCrypto.dll",
+        "lib/wp80/PCLCrypto.xml",
+        "lib/xamarinios10/PCLCrypto.dll",
+        "lib/xamarinios10/PCLCrypto.xml"
+      ]
+    },
+    "PInvoke.BCrypt/0.3.2": {
+      "sha512": "6nSjPx88F+dcQgxfbM/lkYhi/zQWxwBcGAS3de/Q7YmPr5QdLNv5ZMk2UEFpMQhlFNya4TdUy5i3HKA12uMa7Q==",
+      "type": "package",
+      "path": "PInvoke.BCrypt/0.3.2",
+      "files": [
+        "PInvoke.BCrypt.0.3.2.nupkg.sha512",
+        "PInvoke.BCrypt.nuspec",
+        "lib/net40/PInvoke.BCrypt.dll",
+        "lib/net40/PInvoke.BCrypt.xml",
+        "lib/portable-net40+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll",
+        "lib/portable-net40+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.xml",
+        "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.dll",
+        "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.BCrypt.xml"
+      ]
+    },
+    "PInvoke.Kernel32/0.3.2": {
+      "sha512": "zkd5Vc5AQ9B489GMNlmd0wdKnRoLl1B/TnouwcjtaqWbDJ17TQSvBRnV7xjVEpBHQtL/248EaUTcDprJe9bZMA==",
+      "type": "package",
+      "path": "PInvoke.Kernel32/0.3.2",
+      "files": [
+        "PInvoke.Kernel32.0.3.2.nupkg.sha512",
+        "PInvoke.Kernel32.nuspec",
+        "lib/net40/PInvoke.Kernel32.dll",
+        "lib/net40/PInvoke.Kernel32.xml",
+        "lib/portable-net40+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll",
+        "lib/portable-net40+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.xml",
+        "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.dll",
+        "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Kernel32.xml"
+      ]
+    },
+    "PInvoke.NCrypt/0.3.2": {
+      "sha512": "s7SIBXlr3qolZaM5mGEXG2sKBY4yFVHTWBlwhRC93le08Aj+n/IaFVnB9LBFv6mpCCivXdzad+9EX6HHds4PyQ==",
+      "type": "package",
+      "path": "PInvoke.NCrypt/0.3.2",
+      "files": [
+        "PInvoke.NCrypt.0.3.2.nupkg.sha512",
+        "PInvoke.NCrypt.nuspec",
+        "lib/net40/PInvoke.NCrypt.dll",
+        "lib/net40/PInvoke.NCrypt.xml",
+        "lib/portable-net40+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll",
+        "lib/portable-net40+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.xml",
+        "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.dll",
+        "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.NCrypt.xml"
+      ]
+    },
+    "PInvoke.Windows.Core/0.3.2": {
+      "sha512": "cLG8L2mBqeM6mwKxYg34uZnW5A4cAqyWY4nh+ogxon6BOPLcuQ2QSK/b1IKduUIQg6mDgf06rZUVbuVVPi9+fg==",
+      "type": "package",
+      "path": "PInvoke.Windows.Core/0.3.2",
+      "files": [
+        "PInvoke.Windows.Core.0.3.2.nupkg.sha512",
+        "PInvoke.Windows.Core.nuspec",
+        "lib/portable-net40+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll",
+        "lib/portable-net40+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.xml",
+        "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.dll",
+        "lib/portable-net45+win+wpa81+MonoAndroid10+xamarinios10+MonoTouch10/PInvoke.Windows.Core.xml"
       ]
     },
     "System.AppContext/4.0.0": {
@@ -16496,14 +16963,26 @@
         "runtimes/win8-aot/lib/netcore50/System.Xml.XmlSerializer.dll"
       ]
     },
-    "Validation/2.0.6.15003": {
-      "sha512": "8vgCOG9mPeOd3xwyL20OT9RyOKq9PmJb0Iltzwj6eay38Cq2v6ojvpSDbc+sc6YXit+iAVyyvHTS29rBvDpdDQ==",
+    "Validation/2.2.8": {
+      "sha512": "DMNc7JhPlgRwnR+NNb+ldoluObL+RBw96aMoiZae/Looa4vgaAnIysmle/bV2OKqDNW9oUBDckPyfa2+sX6JdA==",
       "type": "package",
+      "path": "Validation/2.2.8",
       "files": [
-        "Validation.2.0.6.15003.nupkg.sha512",
+        "README.md",
+        "Validation.2.2.8.nupkg.sha512",
         "Validation.nuspec",
-        "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.dll",
-        "lib/portable-net40+sl50+win+wpa81+wp80+Xamarin.iOS10+MonoAndroid10+MonoTouch10/Validation.xml"
+        "lib/dotnet/Validation.dll",
+        "lib/dotnet/Validation.xml",
+        "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10/Validation.dll",
+        "lib/portable-net40+sl50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10/Validation.xml",
+        "lib/portable-net45+dnxcore50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10/Validation.dll",
+        "lib/portable-net45+dnxcore50+win+wpa81+wp80+MonoAndroid10+xamarinios10+MonoTouch10/Validation.xml",
+        "tools/2013/RequiresNotNull.snippet",
+        "tools/2013/RequiresNotNullOrEmpty.snippet",
+        "tools/2015/RequiresNotNull.snippet",
+        "tools/2015/RequiresNotNullOrEmpty.snippet",
+        "tools/install_snippets.cmd",
+        "tools/uninstall_snippets.cmd"
       ]
     },
     "WinRTXamlToolkit.Controls.Gauge.UWP/1.9.4": {
@@ -16537,7 +17016,7 @@
       "Microsoft.ApplicationInsights >= 1.0.0",
       "Microsoft.ApplicationInsights.PersistenceChannel >= 1.0.0",
       "Microsoft.ApplicationInsights.WindowsApps >= 1.0.0",
-      "Microsoft.Azure.Devices.Client >= 1.0.13",
+      "Microsoft.Azure.Devices.Client >= 1.2.2",
       "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0",
       "MvvmLightLibs >= 5.2.0",
       "Newtonsoft.Json >= 8.0.1",

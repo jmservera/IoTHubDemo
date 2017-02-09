@@ -30,6 +30,11 @@
             <TextBox Name="IoTHubUri" RelativePanel.RightOf="IoTHubUriLabel"/>
             <TextBlock Name="DeviceNameLabel" RelativePanel.Below="IoTHubUri">Device Name: </TextBlock>
             <TextBox Name="DeviceName" RelativePanel.Below="IoTHubUri" RelativePanel.RightOf="DeviceNameLabel"/>
+                <TextBlock Name="transportLabel" RelativePanel.Below="DeviceNameLabel">Transport</TextBlock>
+                <ComboBox Name="transport" RelativePanel.RightOf="transportLabel">
+                    <ComboBoxItem/>
+                    <ComboBoxItem/>
+                </ComboBox>
             </RelativePanel>
         </RelativePanel>
     </Grid>

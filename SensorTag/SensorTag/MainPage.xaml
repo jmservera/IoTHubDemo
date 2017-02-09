@@ -41,9 +41,9 @@
             <gauge:Gauge Grid.Column="2" Value="{Binding Temperature}" Maximum="100" Minimum="-20" Margin="0,0,0,29.667" Grid.RowSpan="2"/>
             <gauge:Gauge Grid.Column="3" Value="{Binding Humidity}" Maximum="100" Minimum="0" Margin="0,0,0,29.667" Grid.RowSpan="2"/>
             <gauge:Gauge Grid.Column="4" Value="{Binding Lux}" Maximum="100000" Minimum="0" Margin="0,0,0,29.667" Grid.RowSpan="2"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Text="IR Object" />
-            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Text="IR World" />
-            <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Text="Temperature" />
+            <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Text="Object Temp IR" />
+            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Text="Room Temp IR" />
+            <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Text="Room Temp" />
             <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Text="Humidity" />
             <TextBlock Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Text="Lux" />
             <Ellipse Name="Light" Grid.Row="2" Grid.Column="0" Stretch="Uniform" Margin="5" Fill="Yellow"/>

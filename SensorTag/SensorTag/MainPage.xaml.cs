@@ -533,7 +533,9 @@ namespace SensorTag
                         {
                             if (ioTHubDeviceClient != null)
                             {
-                                var message = new Message(Encoding.UTF8.GetBytes(data));
+                                var binary = Encoding.UTF8.GetBytes(data);
+                                Logger.LogInfo($"Sending {binary.Length} bytes");
+                                var message = new Message(binary);
                                 await ioTHubDeviceClient.SendEventAsync(message);
                             }
                             else

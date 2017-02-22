@@ -1,5 +1,6 @@
 ﻿using Common;
 using Microsoft.Azure.Devices.Client;
+using Microsoft.Devices.Tpm;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -33,14 +34,14 @@ namespace SensorTag
     /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
-        const string GUID = "ECD59A6D-1D0E-4CE2-A839-31167815A22D"; //todo create a unique guid per device
-        const string GUIDir = "ECD59A6D-1D0E-4CE2-A839-31167815A22E"; //todo create a unique guid per device
-        const string GUIDAMB = "ECD59A6D-1D0E-4CE2-A839-31167815A2F"; //todo create a unique guid per device
-        const string GUIDLux = "ECD59A6D-1D0E-4CE2-A839-31167815A30"; //todo create a unique guid per device
+        const string GUID = "2D"; //todo create a unique guid per device ECD59A6D-1D0E-4CE2-A839-
+        const string GUIDir = "2E"; //todo create a unique guid per device
+        const string GUIDAMB = "2F"; //todo create a unique guid per device
+        const string GUIDLux = "30"; //todo create a unique guid per device
 
-        const string ORGANIZATION = "Microsoft";
-        const string DISPLAYNAME = "SensorTag 2650";
-        const string LOCATION = "Madrid"; //todo config the location
+        const string ORGANIZATION = "MS";
+        const string DISPLAYNAME = "Tag";
+        const string LOCATION = "M"; //todo config the location
         const string TEMPMEASURE = "Temperature";
         const string HUMIDMEASURE = "Humidity";
         const string LUXMEASURE = "Lux";
@@ -99,7 +100,6 @@ namespace SensorTag
                 Tag_HumidityReceived(this, new DoubleEventArgs(fakeHumidity));
                 Tag_TemperatureReceived(this, new DoubleEventArgs(fakeInternalTemp));
                 Tag_IrTemperatureReceived(this, new DoubleEventArgs(fakeInternalTemp));
-                Tag_IrAmbTemperatureReceived(this, new DoubleEventArgs(fakeExternalTemp));
                 Tag_LuxReceived(this, new DoubleEventArgs(fakeLux));
             }
         }
@@ -123,6 +123,17 @@ namespace SensorTag
                 simulated = value;
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Simulated)));
                 simulatedTimer.Change(simulated ? 0 : Timeout.Infinite, 1000);
+            }
+        }
+
+        public bool UseTPM
+        {
+            get { return useTpm; }
+            set
+            {
+                useTpm = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseTPM)));
+                connect();
             }
         }
 
@@ -185,9 +196,36 @@ namespace SensorTag
                         break;
                     case "IoTHub":
                         {
-                            var key = AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(Config.Default.DeviceName, Config.Default.DeviceKey);
-                            ioTHubDeviceClient = DeviceClient.Create(Config.Default.IotHubUri, key, TransportType.Http1);
+                            if (useTpm)
+                            {
+                                TpmDevice t = new TpmDevice(0);
+                                string hubUri = t.GetHostName();
+                                string deviceId = t.GetDeviceId();
+                                string sasToken = t.GetSASToken();
 
+                                if (string.IsNullOrEmpty(sasToken))
+                                {
+                                    useTpm = false;
+                                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                                    {
+                                        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(UseTPM)));
+                                    });
+                                    Logger.LogError("Tpm not found. Fallback to direct connection.");
+                                }
+                                else
+                                {
+                                    ioTHubDeviceClient = DeviceClient.Create(
+                                        hubUri,
+                                        AuthenticationMethodFactory.
+                                            CreateAuthenticationWithToken(deviceId, sasToken), TransportType.Amqp);
+                                }
+                            }
+
+                            if(!useTpm)
+                            {
+                                var key = AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(Config.Default.DeviceName, Config.Default.DeviceKey);
+                                ioTHubDeviceClient = DeviceClient.Create(Config.Default.IotHubUri, key, TransportType.Http1);
+                            }
                             ioTHubReceiverToken = new CancellationTokenSource();
                             startMessageReceiver(ioTHubDeviceClient, ioTHubReceiverToken.Token);
                         }
@@ -372,7 +410,6 @@ namespace SensorTag
 
             tag.HumidityReceived += Tag_HumidityReceived;
             tag.TemperatureReceived += Tag_TemperatureReceived;
-            tag.IrAmbTemperatureReceived += Tag_IrAmbTemperatureReceived;
             tag.IrTemperatureReceived += Tag_IrTemperatureReceived;
             tag.LuxReceived += Tag_LuxReceived;
             Logger.Log("Tag Connected, reading values", LogLevel.Event);
@@ -388,13 +425,7 @@ namespace SensorTag
         private void Tag_IrTemperatureReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.IrObject = e.Value;
-            sendValue(e, GUIDir, ORGANIZATION, DISPLAYNAME + "Ir", LOCATION, TEMPMEASURE, TEMPUNITS);
-        }
-
-        private void Tag_IrAmbTemperatureReceived(object sender, DoubleEventArgs e)
-        {
-            SensorValues.IrWorld = e.Value;
-            sendValue(e, GUIDAMB, ORGANIZATION, DISPLAYNAME + "Amb Ir", LOCATION, TEMPMEASURE, TEMPUNITS);
+            sendValue(e, GUIDir, ORGANIZATION, DISPLAYNAME + "Obj Tmp", LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
         private void Tag_TemperatureReceived(object sender, DoubleEventArgs e)
@@ -406,10 +437,11 @@ namespace SensorTag
         private void Tag_HumidityReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.Humidity = e.Value;
-            sendValue(e, GUID,ORGANIZATION, DISPLAYNAME + "Humidity", LOCATION,HUMIDMEASURE,HUMIDUNITS);
+            sendValue(e, GUID,ORGANIZATION, DISPLAYNAME + "Hum", LOCATION,HUMIDMEASURE,HUMIDUNITS);
         }
 
         List<SensorInfo> sensorInfoList = new List<SensorInfo>();
+        private bool useTpm;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -474,7 +506,7 @@ namespace SensorTag
                         }
                         else
                         {
-                            data = JsonConvert.SerializeObject(sensorInfoList);
+                            data = JsonConvert.SerializeObject(sensorInfoList, Formatting.None);
                         }
                         count = sensorInfoList.Count;
                         sensorInfoList.Clear();

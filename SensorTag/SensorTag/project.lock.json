@@ -133,6 +133,17 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
+      "Microsoft.Devices.Tpm/1.0.0": {
+        "dependencies": {
+          "Microsoft.TSS": "1.0.3"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        }
+      },
       "Microsoft.Net.Http/2.2.22": {
         "dependencies": {
           "Microsoft.Bcl": "1.1.9",
@@ -333,6 +344,14 @@
           "System.ServiceModel.Security": "4.0.0",
           "System.Text.Encoding.CodePages": "4.0.0",
           "System.Xml.XmlSerializer": "4.0.10"
+        }
+      },
+      "Microsoft.TSS/1.0.3": {
+        "compile": {
+          "lib/netcore/TSS.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/netcore/TSS.UWP.dll": {}
         }
       },
       "Microsoft.VisualBasic/10.0.0": {
@@ -2132,6 +2151,17 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
+      "Microsoft.Devices.Tpm/1.0.0": {
+        "dependencies": {
+          "Microsoft.TSS": "1.0.3"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        }
+      },
       "Microsoft.Net.Http/2.2.22": {
         "dependencies": {
           "Microsoft.Bcl": "1.1.9",
@@ -2325,6 +2355,14 @@
           "System.ServiceModel.Security": "4.0.0",
           "System.Text.Encoding.CodePages": "4.0.0",
           "System.Xml.XmlSerializer": "4.0.10"
+        }
+      },
+      "Microsoft.TSS/1.0.3": {
+        "compile": {
+          "lib/netcore/TSS.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/netcore/TSS.UWP.dll": {}
         }
       },
       "Microsoft.VisualBasic/10.0.0": {
@@ -3984,6 +4022,17 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
+      "Microsoft.Devices.Tpm/1.0.0": {
+        "dependencies": {
+          "Microsoft.TSS": "1.0.3"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        }
+      },
       "Microsoft.Net.Http/2.2.22": {
         "dependencies": {
           "Microsoft.Bcl": "1.1.9",
@@ -4163,6 +4212,14 @@
           "System.ServiceModel.Security": "4.0.0",
           "System.Text.Encoding.CodePages": "4.0.0",
           "System.Xml.XmlSerializer": "4.0.10"
+        }
+      },
+      "Microsoft.TSS/1.0.3": {
+        "compile": {
+          "lib/netcore/TSS.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/netcore/TSS.UWP.dll": {}
         }
       },
       "Microsoft.VisualBasic/10.0.0": {
@@ -5800,6 +5857,17 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
+      "Microsoft.Devices.Tpm/1.0.0": {
+        "dependencies": {
+          "Microsoft.TSS": "1.0.3"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        }
+      },
       "Microsoft.Net.Http/2.2.22": {
         "dependencies": {
           "Microsoft.Bcl": "1.1.9",
@@ -5999,6 +6067,14 @@
       "Microsoft.NETCore.Windows.ApiSets-x64/1.0.0": {
         "native": {
           "runtimes/win10-x64/native/_._": {}
+        }
+      },
+      "Microsoft.TSS/1.0.3": {
+        "compile": {
+          "lib/netcore/TSS.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/netcore/TSS.UWP.dll": {}
         }
       },
       "Microsoft.VisualBasic/10.0.0": {
@@ -7658,6 +7734,17 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
+      "Microsoft.Devices.Tpm/1.0.0": {
+        "dependencies": {
+          "Microsoft.TSS": "1.0.3"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        }
+      },
       "Microsoft.Net.Http/2.2.22": {
         "dependencies": {
           "Microsoft.Bcl": "1.1.9",
@@ -7837,6 +7924,14 @@
           "System.ServiceModel.Security": "4.0.0",
           "System.Text.Encoding.CodePages": "4.0.0",
           "System.Xml.XmlSerializer": "4.0.10"
+        }
+      },
+      "Microsoft.TSS/1.0.3": {
+        "compile": {
+          "lib/netcore/TSS.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/netcore/TSS.UWP.dll": {}
         }
       },
       "Microsoft.VisualBasic/10.0.0": {
@@ -9474,6 +9569,17 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
+      "Microsoft.Devices.Tpm/1.0.0": {
+        "dependencies": {
+          "Microsoft.TSS": "1.0.3"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        }
+      },
       "Microsoft.Net.Http/2.2.22": {
         "dependencies": {
           "Microsoft.Bcl": "1.1.9",
@@ -9673,6 +9779,14 @@
       "Microsoft.NETCore.Windows.ApiSets-x86/1.0.0": {
         "native": {
           "runtimes/win10-x86/native/_._": {}
+        }
+      },
+      "Microsoft.TSS/1.0.3": {
+        "compile": {
+          "lib/netcore/TSS.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/netcore/TSS.UWP.dll": {}
         }
       },
       "Microsoft.VisualBasic/10.0.0": {
@@ -11332,6 +11446,17 @@
           "lib/netcore50/Microsoft.CSharp.dll": {}
         }
       },
+      "Microsoft.Devices.Tpm/1.0.0": {
+        "dependencies": {
+          "Microsoft.TSS": "1.0.3"
+        },
+        "compile": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        },
+        "runtime": {
+          "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll": {}
+        }
+      },
       "Microsoft.Net.Http/2.2.22": {
         "dependencies": {
           "Microsoft.Bcl": "1.1.9",
@@ -11511,6 +11636,14 @@
           "System.ServiceModel.Security": "4.0.0",
           "System.Text.Encoding.CodePages": "4.0.0",
           "System.Xml.XmlSerializer": "4.0.10"
+        }
+      },
+      "Microsoft.TSS/1.0.3": {
+        "compile": {
+          "lib/netcore/TSS.UWP.dll": {}
+        },
+        "runtime": {
+          "lib/netcore/TSS.UWP.dll": {}
         }
       },
       "Microsoft.VisualBasic/10.0.0": {
@@ -13356,6 +13489,17 @@
         "ref/xamarinmac20/_._"
       ]
     },
+    "Microsoft.Devices.Tpm/1.0.0": {
+      "sha512": "nDZK3KgdlE7CoKORqsVLWadh5ovoG/3JPIyGjwh9tNx/n0+B8Goq9Cp8DgcTwFhhokezC1l1Xrw1KBi4Wf1gOQ==",
+      "type": "package",
+      "path": "Microsoft.Devices.Tpm/1.0.0",
+      "files": [
+        "Microsoft.Devices.Tpm.1.0.0.nupkg.sha512",
+        "Microsoft.Devices.Tpm.nuspec",
+        "lib/net45/Microsoft.Devices.Tpm.Net.dll",
+        "lib/uap10.0/Microsoft.Devices.Tpm.Uwp.dll"
+      ]
+    },
     "Microsoft.Net.Http/2.2.22": {
       "sha512": "bqVLJ2UimlAEs2bn3y28lB1pmFRxuysv9pFyB0A86WEMYGYTfDyfjAGjm0fiaSRjlMNU1jVnp8Mxt8qe4OmpXQ==",
       "type": "package",
@@ -13965,6 +14109,18 @@
         "runtimes/win81-x86/native/api-ms-win-core-sysinfo-l1-2-2.dll",
         "runtimes/win81-x86/native/api-ms-win-core-sysinfo-l1-2-3.dll",
         "runtimes/win81-x86/native/api-ms-win-security-cpwl-l1-1-0.dll"
+      ]
+    },
+    "Microsoft.TSS/1.0.3": {
+      "sha512": "wnjjV3PfzWdkAl2koKO/yH7Q+amO9KHsmTl4uQdhJ/Vlv0B/NcN06vHpmHxxQbXXppkMBatESOWKXJHrfIv33g==",
+      "type": "package",
+      "path": "Microsoft.TSS/1.0.3",
+      "files": [
+        "Microsoft.TSS.1.0.3.nupkg.sha512",
+        "Microsoft.TSS.nuspec",
+        "lib/native/TSS.CPP.dll",
+        "lib/net/TSS.NET.dll",
+        "lib/netcore/TSS.UWP.dll"
       ]
     },
     "Microsoft.VisualBasic/10.0.0": {
@@ -17017,6 +17173,7 @@
       "Microsoft.ApplicationInsights.PersistenceChannel >= 1.0.0",
       "Microsoft.ApplicationInsights.WindowsApps >= 1.0.0",
       "Microsoft.Azure.Devices.Client >= 1.2.2",
+      "Microsoft.Devices.Tpm >= 1.0.0",
       "Microsoft.NETCore.UniversalWindowsPlatform >= 5.0.0",
       "MvvmLightLibs >= 5.2.0",
       "Newtonsoft.Json >= 8.0.1",

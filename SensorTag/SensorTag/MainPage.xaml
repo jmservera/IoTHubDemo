@@ -9,7 +9,7 @@
     DataContext="{Binding RelativeSource={RelativeSource self}}"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="20">
 
         <Grid.RowDefinitions>
             <RowDefinition Height="5*" />
@@ -27,7 +27,6 @@
                 <ColumnDefinition/>
                 <ColumnDefinition/>
                 <ColumnDefinition/>
-                <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <Grid.Resources>
                 <ResourceDictionary>
@@ -36,16 +35,14 @@
                     </Style>
                 </ResourceDictionary>
             </Grid.Resources>
-            <gauge:Gauge Grid.Column="0" Value="{Binding IrObject}" Maximum="100" Minimum="-20" Margin="0,0,0,29.667" Grid.RowSpan="2"/>
-            <gauge:Gauge Grid.Column="1" Value="{Binding IrWorld}" Maximum="100" Minimum="-20" Margin="0,0,0,29.667" Grid.RowSpan="2"/>
-            <gauge:Gauge Grid.Column="2" Value="{Binding Temperature}" Maximum="100" Minimum="-20" Margin="0,0,0,29.667" Grid.RowSpan="2"/>
-            <gauge:Gauge Grid.Column="3" Value="{Binding Humidity}" Maximum="100" Minimum="0" Margin="0,0,0,29.667" Grid.RowSpan="2"/>
-            <gauge:Gauge Grid.Column="4" Value="{Binding Lux}" Maximum="100000" Minimum="0" Margin="0,0,0,29.667" Grid.RowSpan="2"/>
-            <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" Text="Object Temp IR" />
-            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" Text="Room Temp IR" />
-            <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" Text="Room Temp" />
-            <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" Text="Humidity" />
-            <TextBlock Grid.Row="1" Grid.Column="4" HorizontalAlignment="Center" Text="Lux" />
+            <gauge:Gauge Grid.Column="0" Value="{Binding IrObject}" Maximum="100" Minimum="-20" Margin="0,0,0,29" Grid.RowSpan="2"/>
+            <gauge:Gauge Grid.Column="1" Value="{Binding Temperature}" Maximum="100" Minimum="-20" Margin="0,0,0,29" Grid.RowSpan="2"/>
+            <gauge:Gauge Grid.Column="2" Value="{Binding Humidity}" Maximum="100" Minimum="0" Margin="0,0,0,29" Grid.RowSpan="2"/>
+            <gauge:Gauge Grid.Column="3" Value="{Binding Lux}" Maximum="100000" Minimum="0" Margin="0,0,0,29" Grid.RowSpan="2"/>
+            <TextBlock Grid.Row="1" Grid.Column="0" HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="Object Temp" />
+            <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="Room Temp" />
+            <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="Humidity" />
+            <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Bottom" Text="Lux" />
             <Ellipse Name="Light" Grid.Row="2" Grid.Column="0" Stretch="Uniform" Margin="5" Fill="Yellow"/>
         </Grid>
         <StackPanel Grid.Row="1" Orientation="Horizontal">
@@ -62,11 +59,13 @@
             <ToggleSwitch IsOn="{Binding SendEnabled,Mode=TwoWay}"/>
             <TextBlock>Simulated:</TextBlock>
             <ToggleSwitch IsOn="{Binding Simulated,Mode=TwoWay}" OnContent="Yes" OffContent="No"/>
+            <TextBlock>Use TPM:</TextBlock>
+            <ToggleSwitch IsOn="{Binding UseTPM,Mode=TwoWay}" OnContent="Yes" OffContent="No"/>
             <TextBlock>Mode:</TextBlock>
             <ComboBox ItemsSource="{Binding Modes}" Width="110" SelectedItem="{Binding CurrentMode, Mode=TwoWay}"/>
             <TextBlock >Writes: <Run Text="{Binding ValueWrites}"/> Sends: <Run Text="{Binding Sends}"/></TextBlock>
         </StackPanel>
-        <TextBlock Name="logger" Grid.Row="2">
+        <TextBlock Name="logger" Grid.Row="2" ScrollViewer.VerticalScrollBarVisibility="Auto">
 
         </TextBlock>
     </Grid>

@@ -24,6 +24,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Microsoft.Azure.Devices.Shared;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -217,17 +218,33 @@ namespace SensorTag
                                     ioTHubDeviceClient = DeviceClient.Create(
                                         hubUri,
                                         AuthenticationMethodFactory.
-                                            CreateAuthenticationWithToken(deviceId, sasToken), TransportType.Amqp);
+                                            CreateAuthenticationWithToken(deviceId, sasToken), TransportType.Mqtt);
                                 }
                             }
 
-                            if(!useTpm)
+                            if (!useTpm)
                             {
                                 var key = AuthenticationMethodFactory.CreateAuthenticationWithRegistrySymmetricKey(Config.Default.DeviceName, Config.Default.DeviceKey);
-                                ioTHubDeviceClient = DeviceClient.Create(Config.Default.IotHubUri, key, TransportType.Http1);
+                                ioTHubDeviceClient = DeviceClient.Create(Config.Default.IotHubUri, key, TransportType.Mqtt);
                             }
                             ioTHubReceiverToken = new CancellationTokenSource();
                             startMessageReceiver(ioTHubDeviceClient, ioTHubReceiverToken.Token);
+
+                            string currentColor = "#FFFFFF";
+                            // device twin
+                            await notifyColor(currentColor);
+
+                            var twin = await ioTHubDeviceClient.GetTwinAsync();
+                            if (twin != null)
+                            {
+                                var desired = twin.Properties.Desired["background"].color;
+                                if (desired.Value != currentColor)
+                                {
+                                    await updateDesiredProperty(twin.Properties.Desired, null);
+                                }
+                            }
+
+                            await ioTHubDeviceClient.SetDesiredPropertyUpdateCallback(updateDesiredProperty, null);
                         }
                         break;
                     case "IoTSuite":
@@ -290,7 +307,45 @@ namespace SensorTag
             }
         }
 
+        private async Task notifyColor(string color)
+        {
+            var patch = new
+            {
+                background = new
+                {
+                    color = color
+                }
+            };
+            var patchValue = JsonConvert.SerializeObject(patch);
+            TwinCollection valuesCollection = (TwinCollection)(JsonConvert.DeserializeObject(patchValue, typeof(TwinCollection), new TwinJsonConverter()));
+            await ioTHubDeviceClient.UpdateReportedPropertiesAsync(valuesCollection);
+        }
 
+        private async Task updateDesiredProperty(TwinCollection desiredProperties, object userContext)
+        {
+            Logger.LogInfo(desiredProperties.ToJson());
+            var value = desiredProperties["background"].color;
+            if (value != null)
+            {
+                var color = value.Value as string;
+                if (color != null)
+                {
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+                     this.Background = getSolidColorBrush(color));
+                    await notifyColor(color);
+                }
+            }
+        }
+
+        SolidColorBrush getSolidColorBrush(string hex)
+        {
+            hex = hex.Replace("#", string.Empty);
+            byte r = (byte)(Convert.ToUInt32(hex.Substring(0, 2), 16));
+            byte g = (byte)(Convert.ToUInt32(hex.Substring(2, 2), 16));
+            byte b = (byte)(Convert.ToUInt32(hex.Substring(4, 2), 16));
+            SolidColorBrush myBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, r, g, b));
+            return myBrush;
+        }
 
         int sends;
         int valueWrites;

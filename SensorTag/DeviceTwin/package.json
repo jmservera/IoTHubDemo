@@ -1,0 +1,14 @@
+{
+  "name": "twins",
+  "version": "1.0.0",
+  "description": "",
+  "main": "SetDesiredColor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "azure-iothub": "^1.1.7"
+  }
+}

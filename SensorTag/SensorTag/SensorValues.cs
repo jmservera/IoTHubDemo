@@ -56,7 +56,7 @@ namespace SensorTag
             set { Set(ref humidity, value); }
         }
 
-        protected async override void RaisePropertyChanged([CallerMemberName] string propertyName = null)
+        public async override void RaisePropertyChanged([CallerMemberName] string propertyName = null)
         {
             if (!dispatcher.HasThreadAccess)
             {
@@ -69,7 +69,7 @@ namespace SensorTag
                 base.RaisePropertyChanged(propertyName);
             }
         }
-        protected async override void RaisePropertyChanged<T>(Expression<Func<T>> propertyExpression)
+        public async override void RaisePropertyChanged<T>(Expression<Func<T>> propertyExpression)
         {
             if (!dispatcher.HasThreadAccess)
             {

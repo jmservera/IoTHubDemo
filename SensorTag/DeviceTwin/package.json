@@ -1,14 +1,18 @@
 {
   "name": "twins",
-  "version": "1.0.0",
-  "description": "",
+  "version": "0.0.1",
+  "description": "A very simple example for setting twin properties and tags",
   "main": "SetDesiredColor.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "jmservera",
+  "license": "Apache-2.0",
   "dependencies": {
     "azure-iothub": "^1.1.7"
+  },
+  "preferGlobal": true,
+  "bin":{
+    "setbgcolor":"./bin/setbgcolor"
   }
 }

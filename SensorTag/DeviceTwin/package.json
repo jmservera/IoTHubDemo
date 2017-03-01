@@ -9,10 +9,11 @@
   "author": "jmservera",
   "license": "Apache-2.0",
   "dependencies": {
-    "azure-iothub": "^1.1.7"
+    "azure-iothub": "^1.1.7",
+    "commander": "^2.9.0"
   },
   "preferGlobal": true,
-  "bin":{
-    "setbgcolor":"./bin/setbgcolor"
+  "bin": {
+    "setbgcolor": "./bin/setbgcolor"
   }
 }

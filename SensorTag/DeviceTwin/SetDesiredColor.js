@@ -1,15 +1,51 @@
- /* jshint node: true */
+ /* jshint node: true*/
+ /* jshint  esversion: 6*/
+
+/* Example
+
+node SetDesiredColor.js "#ffffff" -q "SELECT deviceId, tags.location.region FROM devices where tags.location.region='Madrid'"
+
+*/
+
  'use strict';
+
  var iothub = require('azure-iothub');
- var connectionString = process.env.CONNECTIONSTRING;
-if(connectionString==="" || connectionString === undefined){
-    console.log("Set your env value CONNECTIONSTRING to a valid IoT Hub device connection string");
-    return;
+ var program= require('commander');
+
+ program
+ .version('0.0.1')
+  .arguments('[color]')
+  .option('-q, --sqlQuery <sqlQuery>', 'The query to run.')
+  .option('-C, --connectionString <connectionString>', 'The IoT Hub Connection String')
+  .option('--country <country>','The country to set to the twin','Madrid')
+  .option('-n, --deviceName <deviceName>', 'The device name','sensortag')
+  .option('-i --interval <interval>','The interval for querying, if 0 it only performs one query',0)
+  .action(function(color) {
+      action(color);
+  })
+  .parse(process.argv);
+
+if(program.color===undefined){
+    action("#FF0000");
 }
 
- var registry = iothub.Registry.fromConnectionString(connectionString);
+function action(color){
+    console.log(`Color: ${color} query: ${program.sqlQuery} conn: ${program.connectionString} country: ${program.country} name: ${program.deviceName}`);
+      var connectionString=program.connectionString||process.env.CONNECTIONSTRING;
+      if(connectionString==="" || connectionString === undefined){
+        console.log("Set your env value CONNECTIONSTRING to a valid IoT Hub device connection string");
+        return;
+      }
+      var sqlQuery=program.sqlQuery||"SELECT * FROM devices WHERE deviceId = '"+program.deviceName+"'";
+      start(connectionString,program.deviceName,sqlQuery,color|| "#ff0000",program.interval);
+}
 
- registry.getTwin('sensortag', function(err, twin){
+function start(connectionString, deviceName,sqlQuery,color, interval){
+    console.log(`${connectionString} ${deviceName} ${sqlQuery} ${color}`);
+ var registry = iothub.Registry.fromConnectionString(connectionString);
+var twinsQuery=sqlQuery;
+ 
+ registry.getTwin(deviceName, function(err, twin){
      if (err) {
          console.error(err.constructor.name + ': ' + err.message);
      } else {
@@ -23,7 +59,7 @@ if(connectionString==="" || connectionString === undefined){
              properties:{
                 desired:{
                     background:{
-                        color: process.argv[2] || "#ff0000"
+                        color: color
                     }
                 }
              }
@@ -33,54 +69,28 @@ if(connectionString==="" || connectionString === undefined){
            if (err) {
              console.error('Could not update twin: ' + err.constructor.name + ': ' + err.message);
            } else {
-             console.log(twin.deviceId + ' twin updated successfully, looping 5 seconds for update');
+             console.log(`${twin.deviceId} twin updated successfully, looping ${interval}ms for update`);
              queryTwins();
-             setInterval(queryTwins, 5000);
+             if(interval>0){
+                setInterval(queryTwins, interval);
+             }
            }
          });
          
      }
  });
 
- /*var queryTwins = function() {
-     var query = registry.createQuery("SELECT * FROM devices WHERE tags.location.plant = 'Madrid'", 100);
-     query.nextAsTwin(function(err, results) {
-         if (err) {
-             console.error('Failed to fetch the results: ' + err.message);
-         } else {
-             console.log("Devices in Madrid: " + results.map(function(twin) {return twin.deviceId}).join(','));
-         }
-     });
-
-     query = registry.createQuery("SELECT * FROM devices WHERE tags.location.plant = 'Madrid' AND properties.reported.connectivity.type = 'cellular'", 100);
-     query.nextAsTwin(function(err, results) {
-         if (err) {
-             console.error('Failed to fetch the results: ' + err.message);
-         } else {
-             console.log("Devices in Madrid using cellular network: " + results.map(function(twin) {return twin.deviceId}).join(','));
-         }
-     });
- };*/
-
   var queryTwins = function() {
-     var query = registry.createQuery("SELECT * FROM devices WHERE deviceId = 'sensortag'", 100);
-     query.nextAsTwin(function(err, results) {
+     var query = registry.createQuery(twinsQuery, 100);
+     query.next(function(err, results) {
          if (err) {
              console.error('Failed to fetch the results: ' + err.message);
          } else {
              console.log();
              results.forEach(function(twin) {
-                 var desiredConfig = twin.properties.desired;
-                 var reportedConfig = twin.properties.reported;
-                 var tags=twin.tags;
-                 console.log("Tags for: "+twin.deviceId);
-                 console.log(JSON.stringify(tags,null,2));
-                 console.log("Config report for: " + twin.deviceId);
-                 console.log("Desired: ");
-                 console.log(JSON.stringify(desiredConfig, null, 2));
-                 console.log("Reported: ");
-                 console.log(JSON.stringify(reportedConfig, null, 2));
+                 console.log(JSON.stringify(twin,null,2));
              });
          }
      });
  };
+}

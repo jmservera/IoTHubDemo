@@ -17,7 +17,8 @@ node SetDesiredColor.js "#ffffff" -q "SELECT deviceId, tags.location.region FROM
   .arguments('[color]')
   .option('-q, --sqlQuery <sqlQuery>', 'The query to run.')
   .option('-C, --connectionString <connectionString>', 'The IoT Hub Connection String')
-  .option('--country <country>','The country to set to the twin','Madrid')
+  .option('--country <country>','The country to set to the twin','ES')
+  .option('--region <region>','The region where this device is located','Madrid')
   .option('-n, --deviceName <deviceName>', 'The device name','sensortag')
   .option('-i --interval <interval>','The interval for querying, if 0 it only performs one query',0)
   .action(function(color) {
@@ -30,17 +31,17 @@ if(program.color===undefined){
 }
 
 function action(color){
-    console.log(`Color: ${color} query: ${program.sqlQuery} conn: ${program.connectionString} country: ${program.country} name: ${program.deviceName}`);
+    console.log(`Color: ${color} query: ${program.sqlQuery} conn: ${program.connectionString} country: ${program.country} region: ${program.region} name: ${program.deviceName}`);
       var connectionString=program.connectionString||process.env.CONNECTIONSTRING;
       if(connectionString==="" || connectionString === undefined){
         console.log("Set your env value CONNECTIONSTRING to a valid IoT Hub device connection string");
         return;
       }
       var sqlQuery=program.sqlQuery||"SELECT * FROM devices WHERE deviceId = '"+program.deviceName+"'";
-      start(connectionString,program.deviceName,sqlQuery,color|| "#ff0000",program.interval);
+      start(connectionString,program.deviceName,sqlQuery,color|| "#ff0000",program.interval, program.country, program.region);
 }
 
-function start(connectionString, deviceName,sqlQuery,color, interval){
+function start(connectionString, deviceName,sqlQuery,color, interval, country, region){
     console.log(`${connectionString} ${deviceName} ${sqlQuery} ${color}`);
  var registry = iothub.Registry.fromConnectionString(connectionString);
 var twinsQuery=sqlQuery;
@@ -52,8 +53,8 @@ var twinsQuery=sqlQuery;
          var patch = {
              tags: {
                  location: {
-                     country: 'ES',
-                     region: 'Madrid'
+                     country: country,
+                     region: region
                }
              },
              properties:{

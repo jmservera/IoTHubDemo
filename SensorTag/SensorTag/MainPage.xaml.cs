@@ -153,13 +153,13 @@ namespace SensorTag
                 }
                 if (ioTHubDeviceClient != null)
                 {
-                    await ioTHubDeviceClient.CloseAsync();
-                    ioTHubDeviceClient = null;
                     if (ioTHubReceiverToken != null)
                     {
                         ioTHubReceiverToken.Cancel();
                         ioTHubReceiverToken = null;
                     }
+                    await ioTHubDeviceClient.CloseAsync();
+                    ioTHubDeviceClient = null;
                 }
                 if (ioTSuiteDeviceClient != null)
                 {
@@ -405,7 +405,10 @@ namespace SensorTag
                     }
                 }catch(Exception ex)
                 {
-                    Logger.LogException(ex);
+                    if (!token.IsCancellationRequested)
+                    {
+                        Logger.LogException(ex);
+                    }
                 }
             }
         }

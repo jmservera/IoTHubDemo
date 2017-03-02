@@ -22,15 +22,15 @@ node SetDesiredColor.js "#ffffff" -q "SELECT deviceId, tags.location.region FROM
   .option('-n, --deviceName <deviceName>', 'The device name','sensortag')
   .option('-i --interval <interval>','The interval for querying, if 0 it only performs one query',0)
   .action(function(color) {
-      action(color);
+      setBgColor(color);
   })
   .parse(process.argv);
 
-if(program.color===undefined){
-    action("#FF0000");
+if(program.args[0]===undefined){
+    setBgColor("#FF0000");
 }
 
-function action(color){
+function setBgColor(color){
     console.log(`Color: ${color} query: ${program.sqlQuery} conn: ${program.connectionString} country: ${program.country} region: ${program.region} name: ${program.deviceName}`);
       var connectionString=program.connectionString||process.env.CONNECTIONSTRING;
       if(connectionString==="" || connectionString === undefined){

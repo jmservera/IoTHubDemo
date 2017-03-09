@@ -200,11 +200,10 @@ namespace SensorTag
                             if (useTpm)
                             {
                                 TpmDevice t = new TpmDevice(0);
-                                string hubUri = t.GetHostName();
-                                string deviceId = t.GetDeviceId();
-                                string sasToken = t.GetSASToken();
 
-                                if (string.IsNullOrEmpty(sasToken))
+                                var connectionString = t.GetConnectionString();
+
+                                if (string.IsNullOrEmpty(connectionString))
                                 {
                                     useTpm = false;
                                     await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
@@ -215,10 +214,7 @@ namespace SensorTag
                                 }
                                 else
                                 {
-                                    ioTHubDeviceClient = DeviceClient.Create(
-                                        hubUri,
-                                        AuthenticationMethodFactory.
-                                            CreateAuthenticationWithToken(deviceId, sasToken), TransportType.Mqtt);
+                                    ioTHubDeviceClient = DeviceClient.CreateFromConnectionString(connectionString, TransportType.Mqtt);
                                 }
                             }
 

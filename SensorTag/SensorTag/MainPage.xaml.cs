@@ -35,10 +35,8 @@ namespace SensorTag
     /// </summary>
     public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
-        const string GUID = "2D"; //todo create a unique guid per device ECD59A6D-1D0E-4CE2-A839-
-        const string GUIDir = "2E"; //todo create a unique guid per device
-        const string GUIDAMB = "2F"; //todo create a unique guid per device
-        const string GUIDLux = "30"; //todo create a unique guid per device
+
+        string deviceUniqueId = Guid.NewGuid().ToString();
 
         const string ORGANIZATION = "MS";
         const string DISPLAYNAME = "Tag";
@@ -100,7 +98,7 @@ namespace SensorTag
                 if (fakeLux < 0) fakeLux = 0;
                 Tag_HumidityReceived(this, new DoubleEventArgs(fakeHumidity));
                 Tag_TemperatureReceived(this, new DoubleEventArgs(fakeInternalTemp));
-                Tag_IrTemperatureReceived(this, new DoubleEventArgs(fakeInternalTemp));
+                Tag_IrTemperatureReceived(this, new DoubleEventArgs(fakeExternalTemp));
                 Tag_LuxReceived(this, new DoubleEventArgs(fakeLux));
             }
         }
@@ -141,6 +139,8 @@ namespace SensorTag
 
         private async void connect()
         {
+            deviceUniqueId = Config.Default.DeviceName;
+
             Logger.Log($"Connecting to {currentMode}", LogLevel.Warning);
             try
             {
@@ -200,7 +200,6 @@ namespace SensorTag
                             if (useTpm)
                             {
                                 TpmDevice t = new TpmDevice(0);
-
                                 var connectionString = t.GetConnectionString();
 
                                 if (string.IsNullOrEmpty(connectionString))
@@ -473,25 +472,25 @@ namespace SensorTag
         private void Tag_LuxReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.Lux = e.Value;
-            sendValue(e, GUIDLux, ORGANIZATION, DISPLAYNAME + "Lux", LOCATION, LUXMEASURE, LUXUNITS);
+            sendValue(e, deviceUniqueId, ORGANIZATION, DISPLAYNAME + "Lux", LOCATION, LUXMEASURE, LUXUNITS);
         }
 
         private void Tag_IrTemperatureReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.IrObject = e.Value;
-            sendValue(e, GUIDir, ORGANIZATION, DISPLAYNAME + "Obj Tmp", LOCATION, TEMPMEASURE, TEMPUNITS);
+            sendValue(e, deviceUniqueId, ORGANIZATION, DISPLAYNAME + "Obj Tmp", LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
         private void Tag_TemperatureReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.Temperature = e.Value;
-            sendValue(e, GUID, ORGANIZATION, DISPLAYNAME + "Temp", LOCATION, TEMPMEASURE, TEMPUNITS);
+            sendValue(e, deviceUniqueId+"_Amb", ORGANIZATION, DISPLAYNAME + "Temp", LOCATION, TEMPMEASURE, TEMPUNITS);
         }
 
         private void Tag_HumidityReceived(object sender, DoubleEventArgs e)
         {
             SensorValues.Humidity = e.Value;
-            sendValue(e, GUID,ORGANIZATION, DISPLAYNAME + "Hum", LOCATION,HUMIDMEASURE,HUMIDUNITS);
+            sendValue(e, deviceUniqueId,ORGANIZATION, DISPLAYNAME + "Hum", LOCATION,HUMIDMEASURE,HUMIDUNITS);
         }
 
         List<SensorInfo> sensorInfoList = new List<SensorInfo>();
